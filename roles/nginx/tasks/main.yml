@@ -1,0 +1,20 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Start Nginx Service
+  systemd:
+    name: nginx
+    state: started
+
+- name: Enable Nginx Service at Boot
+  systemd:
+    name: nginx
+    enabled: yes
+
+- name: Restart Nginx Service
+  systemd:
+    name: nginx
+    state: restarted

@@ -1,5 +1,12 @@
 ---
-  - name: Initial setup
-    hosts: all
-    roles:
-      - init
+- name: Playbook to configure Linux users
+  hosts: all
+  become: yes
+  roles:
+    - init
+
+- name: Playbook to set up a web server
+  hosts: web_servers
+  become: yes
+  roles:
+    - nginx
