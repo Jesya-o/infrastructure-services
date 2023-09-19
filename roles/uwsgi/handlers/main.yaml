@@ -1,0 +1,11 @@
+---
+- name: Restart uWSGI service
+  systemd:
+    name: uwsgi
+    state: restarted
+
+- name: Ensure Nginx is started and enabled
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

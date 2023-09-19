@@ -1,0 +1,27 @@
+---
+- name: Install uWSGI packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - uwsgi
+    - uwsgi-plugin-python3
+
+- name: Copy uWSGI configuration for AGAMA
+  copy:
+    content: |
+      [uwsgi]
+      chdir = /opt/agama
+      module = agama:app
+      env = AGAMA_DATABASE_URI=sqlite:////opt/agama/db.sqlite3
+      plugins = python3
+      socket = localhost:5050
+      uid = agama
+    dest: /etc/uwsgi/apps-enabled/agama.ini
+  notify: Restart uWSGI service
+
+- name: uWSGI service
+  ansible.builtin.service:
+    name: uwsgi
+    state: started
+    enabled: true

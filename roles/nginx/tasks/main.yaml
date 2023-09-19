@@ -18,3 +18,9 @@
   systemd:
     name: nginx
     state: restarted
+
+- name: Copy Nginx configuration file
+  copy:
+    src: "{{ playbook_dir }}/roles/nginx/files/default"
+    dest: "/etc/nginx/sites-enabled/default"
+  notify: Restart Nginx
