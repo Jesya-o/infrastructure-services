@@ -1,0 +1,41 @@
+---
+- name: Install MySQL server
+  ansible.builtin.apt:
+    name: mysql-server
+    state: present
+
+- name: Override MySQL configuration file
+  ansible.builtin.copy:
+    src: files/override.cnf
+    dest: /etc/mysql/mysql.conf.d/override.cnf
+  notify: Restart MySQL
+
+- name: Ensure MySQL service is enabled and running
+  ansible.builtin.service: 
+    name: mysql
+    state: started
+    enabled: true
+
+- name: Install MySQL module for Python 3.X if not installed
+  ansible.builtin.apt:
+    name: python3-pymysql
+    state: present
+  when: "'3' in ansible_python_version"
+  tags:
+    - install_mysql_module
+
+- name: Create MySQL database
+  community.mysql.mysql_db:
+    name: "{{ mysql_database }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: MySQL user
+  community.mysql.mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_database }}.*:ALL"
+    host: "%"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  tags:
+    - create_mysql_user
+    

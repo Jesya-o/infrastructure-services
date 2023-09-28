@@ -10,10 +10,13 @@
     state: directory
     owner: agama
 
-- name: Install AGAMA dependencies using APT
-  apt:
-    name: python3-flask-sqlalchemy
+- name: Install AGAMA dependencies
+  ansible.builtin.apt:
+    name:
+      - python3-flask-sqlalchemy
+      - python3-pymysql
     state: present
+
 
 - name: Download agama.py
   get_url:
@@ -21,3 +24,4 @@
     dest: /opt/agama/agama.py
     owner: agama
     mode: '0644'
+  
