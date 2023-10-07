@@ -15,7 +15,7 @@ dns_allowed_networks:
 dns_forwarders:
   - 8.8.8.8
   - 1.1.1.1
-  - 9.9.9.
+  - 9.9.9.9
 
 startup_name: "epy.io"
 vm_name: "Jesya-o-2"
