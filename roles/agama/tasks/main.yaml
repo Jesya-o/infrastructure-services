@@ -17,10 +17,9 @@
       - python3-pymysql
     state: present
 
-
 - name: Download agama.py
   get_url:
-    url: https://raw.githubusercontent.com/hudolejev/agama/master/agama.py  # Replace with the actual download URL
+    url: https://raw.githubusercontent.com/hudolejev/agama/master/agama.py 
     dest: /opt/agama/agama.py
     owner: agama
     mode: '0644'

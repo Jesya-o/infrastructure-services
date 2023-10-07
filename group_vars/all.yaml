@@ -1,4 +1,4 @@
-mysql_host: 192.168.42.51
+mysql_host: "{{ dns_server_ip }}"
 mysql_database: agama
 mysql_user: agama
 mysql_password: !vault |
@@ -8,4 +8,17 @@ mysql_password: !vault |
           30393564343562623935303632363333623936393134323530636536656533363464616136353637
           3737633932653062370a313034323436663061353330326130366531653137646536653465323534
           65353031363764373365396334393662666338343033323261366235373861623731
+
+dns_allowed_networks:
+  - "192.168.42.0/23"
+  - "127.0.0.0/8"
+dns_forwarders:
+  - 8.8.8.8
+  - 1.1.1.1
+  - 9.9.9.
+
+startup_name: "epy.io"
+vm_name: "Jesya-o-2"
+zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
+dns_server_ip: "192.168.43.200"
           

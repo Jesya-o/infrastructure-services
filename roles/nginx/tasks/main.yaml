@@ -17,7 +17,7 @@
 - name: Restart Nginx Service
   systemd:
     name: nginx
-    state: restarted
+    state: started
 
 - name: Copy Nginx configuration file
   copy:

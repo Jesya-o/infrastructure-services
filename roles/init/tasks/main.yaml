@@ -26,6 +26,32 @@
   ansible.builtin.apt:
     cache_valid_time: 86400
 
+- name: Stop systemd-resolved service
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: stopped
+
+- name: Disable systemd-resolved service on boot
+  ansible.builtin.service:
+    name: systemd-resolved
+    enabled: no
+
+- name: Generate and copy resolv.conf file
+  ansible.builtin.template:
+    src: "resolv.conf.j2"
+    dest: "/etc/resolv.conf"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Add entries to /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  loop:
+    - "127.0.0.1 localhost"
+    - "{{ dns_server_ip }} {{ vm_name }}"
+
 
 # - name: Ansible ping module
 #   ansible.builtin.ping:
