@@ -13,7 +13,13 @@
 - name: Ensure DNS forwarders are configured
   ansible.builtin.template:
     src: named.conf.options.j2
-    dest: /etc/bind/named.conf.options
+    dest: "{{ named_conf_file_path }}"
+  notify: Restart Bind9 service
+
+- name: Ensure DNS forwarders are configured
+  ansible.builtin.template:
+    src: named.conf.local.j2
+    dest: "{{ named_conf_local_file_path }}"
   notify: Restart Bind9 service
 
 - name: Generate and copy master zone file
@@ -24,3 +30,10 @@
     group: bind
     mode: "0644"
   notify: Restart Bind9 service
+
+# - name: Check what variables were collected
+#   ansible.builtin.debug:
+#     msg: 
+#       - "vm name: {{ vm_name }} "
+#       - "vm name 2: {{ vm_name2 }} "
+#       - "ip: {{ hostvars[vm_name]['ansible_default_ipv4']['address'] }}"

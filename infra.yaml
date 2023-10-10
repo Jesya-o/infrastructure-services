@@ -10,6 +10,14 @@
   become: yes
   roles:
     - bind
+  tags:
+    - bind
+
+- name: Resolver service
+  hosts: all
+  become: yes
+  roles:
+    - resolver
 
 - name: Database server
   hosts: db_servers
