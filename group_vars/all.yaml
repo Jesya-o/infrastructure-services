@@ -24,5 +24,10 @@ vm_names:
 zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
 named_conf_file_path: "/etc/bind/named.conf.options"
 named_conf_local_file_path: "/etc/bind/named.conf.local"
-dns_server_ip: "192.168.42.195"
-          
+dns_server_ip: "192.168.42.173"    
+
+node_exporter_version: "1.6.1"
+node_exporter_bin: /usr/local/bin/node_exporter
+node_exporter_user: node-exporter
+node_exporter_group: "{{ node_exporter_user }}"
+node_exporter_dir_conf: /etc/node_exporter
