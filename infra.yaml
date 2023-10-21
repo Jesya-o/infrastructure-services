@@ -4,6 +4,8 @@
   become: yes
   roles:
     - init
+  tags: 
+    - i
 
 - name: DNS server
   hosts: dns_servers
@@ -11,19 +13,23 @@
   roles:
     - bind
   tags:
-    - bind
+    - b
 
 - name: Resolver service
   hosts: all
   become: yes
   roles:
     - resolver
+  tags: 
+    - r
 
 - name: Database server
   hosts: db_servers
   become: yes
   roles: 
     - mysql
+  tags:
+    - db
 
 - name: Web server
   hosts: web_servers
@@ -32,3 +38,13 @@
     - agama
     - uwsgi
     - nginx
+  tags:
+    - a
+
+- name: Prometheus
+  hosts: prometheus
+  become: yes
+  roles:
+    - prometheus
+  tags:
+    - p

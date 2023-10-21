@@ -10,12 +10,10 @@
 #     user: juri
 #     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7TPxJ4rbrgO+cZzIzsU+PP6mk/3Njyb0dIFeCxuXWLhl2hNz5/4fzJUYxJV4ZYOE3aVLF14NrQec0uBvn4OKtCEXfBb+dNJqn8Zvqef529VexwAEha1qwCNKX4+mibYTCwX5sl2Vlu/qTQccc/ep2Te7Q561kVyl8WgpBnTrP+ogbXB5RDa1FxGx/Cwd7HN0p7RAob4efnGhpML8mrydnf0L8vvcJreAJLfjDwIdA1SYPBrSLKIrOhnncB0cEoFCbDD/LLNAG0igD3qgfu7FXEBvdFQQqj/9bxm3arg70dOb7yViqN+VHJ3sF7cnnRSuTSBuaLtSO9RJKfhaPLILDzdyl3HLnLbfmKZSqZN0nqczve8VRapLRlnKSpDDwadP4uiPuXDUAz0OwE7IYvbQUflZYiRrFZc9F6Pwp9W9PLZ+RoISY5YXWKsNbFIOTrhe2JfwoceCZgtxe5kZmlEq7I6Thd6EBPv7X/BlNZBpcgu1oaCBseQWsHkQoFcuZgLE="
 #     state: present
-
 # - name: Create Roman user
 #   ansible.builtin.user:
 #     name: roman
 #     state: present
-
 # - name: Ensure Roman's authorized key is present
 #   ansible.posix.authorized_key:
 #     user: roman
@@ -26,79 +24,11 @@
   ansible.builtin.apt:
     cache_valid_time: 86400
 
-- name: Check if node exporter exist
-  stat:
-    path: "{{ node_exporter_bin }}"
-  register: __check_node_exporter_present
-
-- name: Create node exporter group
-  group:
-    name: "{{ node_exporter_group }}"
+- name: Install Prometheus Node Exporter
+  ansible.builtin.apt:
+    name: prometheus-node-exporter
     state: present
-
-- name: Create node exporter user
-  user:
-    name: "{{ node_exporter_user }}"
-    append: true
-    shell: /usr/sbin/nologin
-    system: true
-    create_home: false
-    groups: "{{ node_exporter_group }}"
-
-- name: Create node exporter config dir
-  file:
-    path: "{{ node_exporter_dir_conf }}"
-    state: directory
-    owner: "{{ node_exporter_user }}"
-    group: "{{ node_exporter_group }}"
-
-- name: If node exporter exist get version
-  shell: "cat /etc/systemd/system/node_exporter.service | grep Version | sed s/'.*Version '//g"
-  when: __check_node_exporter_present.stat.exists == true
-  changed_when: false
-  register: __get_node_exporter_version
-  
-- name: Download and unzip node exporter if not exist
-  unarchive:
-    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
-    dest: /tmp/
-    remote_src: yes
-    validate_certs: no
-  when: __check_node_exporter_present.stat.exists == false
-
-- name: Move the binary to the final destination
-  copy:
-    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
-    dest: "{{ node_exporter_bin }}"
-    owner: "{{ node_exporter_user }}"
-    group: "{{ node_exporter_group }}"
-    mode: 0755
-    remote_src: yes
-  when:
-    - __check_node_exporter_present.stat.exists == false
-    # - not __get_node_exporter_version.stdout == node_exporter_version
-
-- name: Clean
-  file:
-    path: /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/
-    state: absent
-
-- name: Install service
-  template:
-    src: node_exporter.service.j2
-    dest: /etc/systemd/system/node_exporter.service
-    owner: root
-    group: root
-    mode: 0755
-  notify: reload_daemon_and_restart_node_exporter
-
-- meta: flush_handlers
-
-- name: Service always started
-  systemd:
-    name: node_exporter
-    state: started
-    enabled: yes
+  become: yes
 
 # - name: Ansible ping module
 #   ansible.builtin.ping:
