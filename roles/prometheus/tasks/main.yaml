@@ -4,17 +4,19 @@
     name: prometheus
     state: present
 
-- name: Copy Prometheus service configuration
-  template:
-    src: prometheus_service.j2
-    dest: /etc/default/prometheus
-  notify: Restart Prometheus
-
 - name: Configure Prometheus
   template:
     src: prometheus.yml.j2
     dest: /etc/prometheus/prometheus.yml
   notify: Restart Prometheus
+
+- name: Modify Prometheus service unit
+  replace:
+    path: /lib/systemd/system/prometheus.service
+    regexp: '^ExecStart=/usr/bin/prometheus .*'
+    replace: 'ExecStart=/usr/bin/prometheus --config.file /etc/prometheus/prometheus.yml --web.external-url="http://193.40.156.67:16580/prometheus" --log.level=debug'
+  notify:
+    - Restart Prometheus
 
 - name: Ensure Prometheus started and enabled
   ansible.builtin.service:

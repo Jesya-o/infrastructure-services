@@ -21,6 +21,6 @@
 
 - name: Copy Nginx configuration file
   copy:
-    src: "{{ playbook_dir }}/roles/nginx/files/default"
+    src: "{{ playbook_dir }}/roles/nginx/templates/default.j2"
     dest: "/etc/nginx/sites-enabled/default"
   notify: Restart Nginx
