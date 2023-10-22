@@ -24,5 +24,6 @@ vm_names:
 zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
 named_conf_file_path: "/etc/bind/named.conf.options"
 named_conf_local_file_path: "/etc/bind/named.conf.local"
-dns_server_ip: "192.168.43.122"
+dns_server_ip: "192.168.42.165"
 
+public_http_endpoint: 193.40.156.67:16580

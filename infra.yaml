@@ -37,9 +37,16 @@
   roles:
     - agama
     - uwsgi
-    - nginx
   tags:
     - a
+
+- name: Nginx
+  hosts: all
+  become: yes
+  roles: 
+    - nginx
+  tags:
+    - n
 
 - name: Prometheus
   hosts: prometheus

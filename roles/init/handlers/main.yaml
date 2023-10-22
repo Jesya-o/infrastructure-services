@@ -1,4 +1,5 @@
-- name: reload_daemon_and_restart_node_exporter
+---
+- name: Restart Node Exporter service
   systemd:
-    name: node_exporter
+    name: prometheus-node-exporter
     state: restarted

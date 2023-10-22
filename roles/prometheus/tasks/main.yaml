@@ -4,7 +4,13 @@
     name: prometheus
     state: present
 
-- name: Create Prometheus configuration
+- name: Copy Prometheus service configuration
+  template:
+    src: prometheus_service.j2
+    dest: /etc/default/prometheus
+  notify: Restart Prometheus
+
+- name: Configure Prometheus
   template:
     src: prometheus.yml.j2
     dest: /etc/prometheus/prometheus.yml

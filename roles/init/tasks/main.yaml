@@ -28,7 +28,14 @@
   ansible.builtin.apt:
     name: prometheus-node-exporter
     state: present
-  become: yes
+  notify:
+    - Restart Node Exporter service
+
+- name: Start and enable Node Exporter
+  systemd:
+    name: prometheus-node-exporter
+    enabled: yes
+    state: started
 
 # - name: Ansible ping module
 #   ansible.builtin.ping:
