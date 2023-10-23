@@ -33,18 +33,3 @@ done < /home/jesya-o/Projects/iis/ica0002/hosts
 
 # Replace the original file with the updated one
 mv "$tmp_file" /home/jesya-o/Projects/iis/ica0002/hosts
-
-
-# Fetch the new IP from the web page
-new_ip=$(curl -s http://193.40.156.67/students/Jesya-o.html | grep -oP 'Jesya-o-2</td><td>\K\d+\.\d+\.\d+\.\d+')
-
-# Get the previous IP from a file
-prev_ip=$(cat /home/jesya-o/Projects/iis/ica0002/group_vars/all.yaml | grep -oP 'dns_server_ip: "\K\d+\.\d+\.\d+\.\d+')
-
-# Check if the previous IP and new IP are equal
-if [ "$prev_ip" == "$new_ip" ]; then
-    echo "The previous IP is equal to the new IP: $prev_ip"
-else
-    sed -i "s/dns_server_ip: .*/dns_server_ip: \"$new_ip\"/" /home/jesya-o/Projects/iis/ica0002/group_vars/all.yaml
-    echo "New dns server ip: \"$new_ip\""
-fi
