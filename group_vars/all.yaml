@@ -1,4 +1,4 @@
-mysql_host: "{{ dns_server_ip }}"
+mysql_host: "{{ hostvars[vm_names[1]]['ansible_default_ipv4']['address'] }}"
 mysql_database: agama
 mysql_user: agama
 mysql_password: !vault |
@@ -24,6 +24,3 @@ vm_names:
 zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
 named_conf_file_path: "/etc/bind/named.conf.options"
 named_conf_local_file_path: "/etc/bind/named.conf.local"
-# dns_server_ip: "192.168.43.151"
-
-public_http_endpoint: 193.40.156.67:31280
