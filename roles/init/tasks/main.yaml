@@ -39,3 +39,9 @@
 
 # - name: Ansible ping module
 #   ansible.builtin.ping:
+
+- name: Ensure ca-certificates version is 20230311ubuntu0.20.04.1 or newer
+  ansible.builtin.apt:
+    name: ca-certificates=20230311ubuntu0.20.04.1
+    state: present
+  when: ansible_distribution == 'Ubuntu'
