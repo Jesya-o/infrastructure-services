@@ -13,3 +13,21 @@ scrape_configs:
       {% for host in groups['all'] %}
         - {{ host }}:9100
       {% endfor %}
+  
+  - job_name: 'mysql'
+    static_configs:
+      {% for host in groups['db_servers'] %}
+      - targets: ['{{ host }}:9104']
+      {% endfor %}
+
+  - job_name: 'bind'
+    static_configs:
+    {% for host in groups['dns_servers'] %}
+      - targets: ['{{ host }}:9119']
+    {% endfor %}
+
+  - job_name: 'nginx'
+    static_configs:
+      {% for host in groups['web_servers'] %}
+      - targets: ['{{ host }}:9113']
+      {% endfor %}

@@ -54,28 +54,6 @@
   tags:
     - create_mysql_exporter_user
 
-# - name: Create MySQL user for exporter
-#   mysql_user:
-#     name: "{{ mysql_exporter_user }}"
-#     password: "{{ mysql_exporter_password }}"
-#     encrypted: yes
-#     priv: "{{ mysql_database }}.*:ALL,GRANT"
-#     state: present
-
-# - name: Create MySQL user for exporter
-#   command: prometheus-mysqld-exporter --config.my-cnf=/var/lib/prometheus/.my.cnf
-#   environment:
-#     HOME: "/home/{{ ansible_user }}/"
-#   async: 300
-#   poll: 0
-#   ignore_errors: yes
-#   changed_when: false
-#   register: mysql_exporter_result
-
-# - name: Display User and Home Folder
-#   debug:
-#     msg: "The playbook is running as user {{ ansible_user }} with a home folder at /var/lib/prometheus/"
-
 - name: Create .my.cnf file
   template:
     src: my.cnf.j2
@@ -84,12 +62,6 @@
     group: prometheus
     mode: '0600'
   notify: Restart MySQL exporter
-
-# - name: debug
-#   debug: 
-#     var:
-#       - ansible_env.HOME
-#       - ansible_user_id
 
 - name: flush
   ansible.builtin.meta: flush_handlers

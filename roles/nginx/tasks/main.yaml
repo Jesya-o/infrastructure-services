@@ -24,3 +24,15 @@
     src: "{{ playbook_dir }}/roles/nginx/templates/default.j2"
     dest: "/etc/nginx/sites-enabled/default"
   notify: Restart Nginx
+
+- name: Install Nginx exporter
+  apt:
+    name: prometheus-nginx-exporter
+    state: present
+
+- name: Ensure Nginx exporter service is started and enabled
+  systemd:
+    name: prometheus-nginx-exporter
+    state: started
+    enabled: yes
+  notify: Restart Nginx exporter

@@ -31,9 +31,14 @@
     mode: "0644"
   notify: Restart Bind9 service
 
-# - name: Check what variables were collected
-#   ansible.builtin.debug:
-#     msg: 
-#       - "vm name: {{ vm_name }} "
-#       - "vm name 2: {{ vm_name2 }} "
-#       - "ip: {{ hostvars[vm_name]['ansible_default_ipv4']['address'] }}"
+- name: Install Bind9 exporter
+  apt:
+    name: prometheus-bind-exporter
+    state: present
+
+- name: Ensure Bind9 exporter service is started and enabled
+  systemd:
+    name: prometheus-bind-exporter
+    state: started
+    enabled: yes
+  notify: Restart Bind9 exporter

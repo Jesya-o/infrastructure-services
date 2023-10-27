@@ -3,3 +3,8 @@
   ansible.builtin.systemd:
     name: bind9
     state: restarted
+
+- name: Restart Bind9 exporter
+  service:
+    name: prometheus-bind-exporter
+    state: restarted
