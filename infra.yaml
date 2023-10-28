@@ -16,7 +16,7 @@
     - b
 
 - name: Resolver service
-  hosts: all
+  hosts: nginx_and_resolver_servers
   become: yes
   roles:
     - resolver
@@ -41,7 +41,7 @@
     - a
 
 - name: Nginx
-  hosts: all
+  hosts: nginx_and_resolver_servers
   become: yes
   roles: 
     - nginx

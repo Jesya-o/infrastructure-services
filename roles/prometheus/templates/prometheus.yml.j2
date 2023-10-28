@@ -28,6 +28,6 @@ scrape_configs:
 
   - job_name: 'nginx'
     static_configs:
-      {% for host in groups['web_servers'] %}
+      {% for host in groups['nginx_and_resolver_servers'] %}
       - targets: ['{{ host }}:9113']
       {% endfor %}
