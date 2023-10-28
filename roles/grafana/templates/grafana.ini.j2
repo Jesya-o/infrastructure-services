@@ -1,0 +1,4 @@
+[server]
+root_url = http://{{ public_url }}:{{ hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2].split('.')[3] }}80/grafana/
+serve_from_sub_path = true
+

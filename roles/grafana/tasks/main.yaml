@@ -13,8 +13,43 @@
     name: grafana
     state: present
 
+- name: Copy Grafana configuration
+  template:
+    src: grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+  notify: Restart Grafana
+
 - name: Ensure Grafana service is started and enabled
   ansible.builtin.service:
     name: grafana-server
     state: started
     enabled: yes
+
+# - name: Configure Prometheus Datasource
+#   community.grafana.grafana_datasource:
+#     name: Prometheus
+#     type: prometheus
+#     access: proxy
+#     url: http://prometheus-server:9090
+#     isDefault: true
+# - name: Precreate Main Dashboard
+#   hosts: localhost
+#   tasks:
+#     - name: Create Main Dashboard
+#       uri:
+#         url: http://grafana-server:3000/api/dashboards/db
+#         method: POST
+#         user: your_username
+#         password: your_password
+#         body: 'path/to/dashboard.json'
+#       delegate_to: localhost
+#       become: yes
+# - name: Create Grafana Admin User
+#   hosts: localhost
+#   tasks:
+#     - name: Create Admin User
+#       community.grafana.grafana_admin_user:
+#         username: your_gh_username
+#         password: your_gh_password
+#         state: present
+#       become: yes

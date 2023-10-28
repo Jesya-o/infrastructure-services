@@ -56,3 +56,10 @@
     - grafana
   tags:
     - m
+
+- hosts: Jesya-o-2
+  gather_facts: yes
+  tasks:
+    - debug: var=hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2].split('.')[3]
+  tags:
+    - f
