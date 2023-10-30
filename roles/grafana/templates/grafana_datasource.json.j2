@@ -1,0 +1,12 @@
+{
+    "name": "Prometheus",
+    "type": "prometheus",
+    "access": "proxy",
+    "url": "http://{{ vm_names[1] | lower }}:9090",
+    "jsonData": {
+        "httpMethod": "POST",
+        "manageAlerts": true,
+        "prometheusType": "Prometheus",
+        "cacheLevel": "High"
+    }
+}
