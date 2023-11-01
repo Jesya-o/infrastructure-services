@@ -31,84 +31,69 @@
     state: started
     enabled: yes
 
-# - name: Create Admin User
-#   ansible.builtin.uri:
-#     url: "http://{{ hostvars[inventory_hostname].public_url }}:{{ hostvars[inventory_hostname].ansible_port | regex_search('^[0-9]{2}')  }}80/grafana/api/admin/users"
-#     method: POST
-#     user: "admin"
-#     password: "admin"
-#     body: '{"login":"{{ grafana_user }}","password":"{{ grafana_pwd }}","name":"{{ grafana_user }}","email":"{{ email }}","isGrafanaAdmin":true}'
-#     status_code: 200
-#     body_format: json
-#     validate_certs: no
+- name: Check if the datasource already exists
+  uri:
+    url: http://localhost:3000/api/datasources/name/Prometheus
+    method: GET
+    headers:
+      Authorization: "Basic SmVzeWEtbzp0b2pp"
+    status_code: 200
+    validate_certs: no
+  ignore_errors: yes
+  register: datasource_exists
 
-# - name: Configure Prometheus Datasource
-#   community.grafana.grafana_datasource:
-#     name: Prometheus
-#     access: proxy
-#     ds_type: prometheus
-#     ds_url: http://{{ vm_names[1] | lower }}:9090/prometheus
-#     url: http://{{ vm_names[1] | lower }}:9090/prometheus
+- name: Configure Grafana datasource if not already configured
+  when: datasource_exists.status != 200
+  uri:
+    url: http://localhost:3000/api/datasources
+    method: POST
+    body: '{
+      "name": "Prometheus",
+      "type": "prometheus",
+      "url": "http://jesya-o-2:9090/prometheus",
+      "access": "proxy",
+      "isDefault": true
+    }'
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Basic SmVzeWEtbzp0b2pp"
+    status_code: 200
+    validate_certs: no
 
-# - name: Create or update a Grafana user
-#   community.grafana.grafana_user:
-#     url: "{{ grafana_url }}"
-#     url_username: admin
-#     url_password: admin
-#     name: "Ksenija Okuneva"
-#     email: "{{ email }}"
-#     # login: "{{ grafana_user }}"
-#     # password: "{{ grafana_pwd }}"
-#     login: Jesya
-#     password: pwd
-#     is_admin: true
-#     state: present
+# - name: Copy main.json to remote host
+#   copy:
+#     src: "{{ role_path }}/files/main.json"
+#     dest: /var/lib/grafana/main.json
 
-# - name: Create Grafana API Key
+# - name: Create Grafana Dashboard
 #   uri:
-#     url: "{{ grafana_url }}/api/auth/keys"
+#     url: http://localhost:3000/api/dashboards/db
 #     method: POST
-#     # user: "{{ grafana_user }}"
-#     # password: "{{ grafana_pwd }}"
-#     user: Jesya
-#     password: pwd
+#     body: "{{ lookup('file', '{{ role_path }}/files/main.json') }}"
+#     body_format: json
 #     headers:
 #       Content-Type: "application/json"
-#     body: '{"name": "MyAPIKey", "role": "Admin"}'
-#     body_format: json
+#       Authorization: "Basic SmVzeWEtbzp0b2pp"
 #     status_code: 200
-#   register: api_key_response
-
-# - name: Print API Key
-#   debug:
-#     var: api_key_response.json
-
-# - name: Create/Update Data sources
-#   community.grafana.grafana_datasource:
-#     dataSource: |
-#       "{
-#           'name': 'Prometheus',
-#           'type': 'prometheus',
-#           'access': 'proxy',
-#           'url': 'http://{{ vm_names[1] | lower }}:9090',
-#           'jsonData': {
-#               'httpMethod': 'POST',
-#               'manageAlerts': true,
-#               'prometheusType': 'Prometheus',
-#               'cacheLevel': 'High'
-#           }
-#       }"
-#     grafana_url: "{{ grafana_url }}"
-#     grafana_api_key: "{{ api_key_response.key }}"
-#     state: present
+#     validate_certs: no
 
 # - name: Create Main Dashboard
 #   uri:
-#     url: http://{{ vm_names[1] | lower }}:3000/api/dashboards/db
+#     url: http://localhost:3000/api/dashboards/db
 #     method: POST
 #     user: "{{ grafana_user }}"
 #     password: "{{ grafana_pwd }}"
 #     body: files/main.json
 #   delegate_to: localhost
+
+# - name: Export dashboard
+#   community.grafana.grafana_dashboard:
+#     grafana_url: http://localhost:3000/api/dashboards/db
+#     grafana_user: "{{ grafana_user }}"
+#     grafana_password: "{{ grafana_pwd}}"
+#     org_id: 1
+#     state: export
+#     uid: "IIS"
+#     path: "/files/main.json"
 
 
