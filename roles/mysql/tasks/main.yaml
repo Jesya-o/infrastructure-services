@@ -51,8 +51,6 @@
     priv: '*.*:PROCESS,REPLICATION CLIENT,SELECT'
     host: 'localhost'
     login_unix_socket: /var/run/mysqld/mysqld.sock
-  tags:
-    - create_mysql_exporter_user
 
 - name: Create .my.cnf file
   template:
