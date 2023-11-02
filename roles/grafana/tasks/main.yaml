@@ -19,6 +19,16 @@
       - "{{ hostvars[inventory_hostname].public_url }}"
       - "{{ hostvars[inventory_hostname].ansible_port | regex_search('^[0-9]{2}')  }}"
 
+- name: Copy main.json to remote host
+  copy:
+    src: "{{ role_path }}/files/main.json"
+    dest: /etc/grafana/provisioning/dashboards/main.json
+
+- name: Copy provisioning configuration file to the remote host
+  template:
+    src: "{{ role_path }}/templates/grafana_provisioning.yaml.j2"
+    dest: /etc/grafana/provisioning/dashboards/default.yaml
+
 - name: Copy Grafana configuration
   template:
     src: grafana.ini.j2
@@ -59,41 +69,3 @@
       Authorization: "Basic SmVzeWEtbzp0b2pp"
     status_code: 200
     validate_certs: no
-
-# - name: Copy main.json to remote host
-#   copy:
-#     src: "{{ role_path }}/files/main.json"
-#     dest: /var/lib/grafana/main.json
-
-# - name: Create Grafana Dashboard
-#   uri:
-#     url: http://localhost:3000/api/dashboards/db
-#     method: POST
-#     body: "{{ lookup('file', '{{ role_path }}/files/main.json') }}"
-#     body_format: json
-#     headers:
-#       Content-Type: "application/json"
-#       Authorization: "Basic SmVzeWEtbzp0b2pp"
-#     status_code: 200
-#     validate_certs: no
-
-# - name: Create Main Dashboard
-#   uri:
-#     url: http://localhost:3000/api/dashboards/db
-#     method: POST
-#     user: "{{ grafana_user }}"
-#     password: "{{ grafana_pwd }}"
-#     body: files/main.json
-#   delegate_to: localhost
-
-# - name: Export dashboard
-#   community.grafana.grafana_dashboard:
-#     grafana_url: http://localhost:3000/api/dashboards/db
-#     grafana_user: "{{ grafana_user }}"
-#     grafana_password: "{{ grafana_pwd}}"
-#     org_id: 1
-#     state: export
-#     uid: "IIS"
-#     path: "/files/main.json"
-
-

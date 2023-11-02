@@ -9,7 +9,6 @@ server {
 
 {% if inventory_hostname in groups['monitoring'] %}
 	location /prometheus {
-        proxy_set_header Host $http_host;
         proxy_pass http://localhost:9090; 
     }
 
