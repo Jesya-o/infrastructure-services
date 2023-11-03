@@ -1,0 +1,48 @@
+---
+- name: Ensure the 'pinger' user exists
+  user:
+    name: pinger
+    state: present
+    shell: /bin/bash
+    home: /home/pinger
+
+- name: Install fping
+  apt:
+    name: fping
+    state: present
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Create /etc/pinger directory
+  file:
+    path: /etc/pinger
+    state: directory
+    mode: "0755"
+
+- name: Copy pinger bash script
+  template:
+    src: pinger.j2
+    dest: /usr/local/bin/pinger
+    mode: "0755"
+
+- name: Copy pinger configuration
+  template:
+    src: pinger.conf.j2
+    dest: /etc/pinger/pinger.conf
+  notify:
+    - Reload systemd
+
+- name: Copy pinger service unit
+  template:
+    src: pinger.service.j2
+    dest: /etc/systemd/system/pinger.service
+  notify:
+    - Reload systemd
+
+- name: flush
+  ansible.builtin.meta: flush_handlers
+
+- name: Start and enable the pinger service
+  systemd:
+    name: pinger.service
+    state: started
+    enabled: yes

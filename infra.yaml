@@ -56,3 +56,19 @@
     - grafana
   tags:
     - m
+
+- name: Logging
+  hosts: all
+  become: yes
+  roles:
+    - influxdb
+  tags:
+    - l
+
+- name: Pinger
+  hosts: pinger
+  become: yes
+  roles:
+    - pinger
+  tags:
+    - p

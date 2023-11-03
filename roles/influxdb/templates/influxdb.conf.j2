@@ -1,0 +1,14 @@
+# /etc/influxdb/influxdb.conf
+
+[meta]
+  dir = "/var/lib/influxdb/meta"
+  retention-autocreate = true
+
+[data]
+  dir = "/var/lib/influxdb/data"
+  engine = "tsm1"
+  wal-dir = "/var/lib/influxdb/wal"
+
+[http]
+  auth-enabled = false
+  bind-address = ":8086"

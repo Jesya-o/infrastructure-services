@@ -1,5 +1,5 @@
-Jesya-o-1 ansible_host=193.40.156.67 ansible_port=7622 ansible_user=ubuntu
-Jesya-o-2 ansible_host=193.40.156.67 ansible_port=12622 ansible_user=ubuntu
+Jesya-o-1 ansible_host=193.40.156.67 ansible_port=42422 ansible_user=ubuntu
+Jesya-o-2 ansible_host=193.40.156.67 ansible_port=31822 ansible_user=ubuntu
 
 [dns_servers]
 Jesya-o-2
@@ -16,3 +16,6 @@ Jesya-o-2
 
 [monitoring]
 Jesya-o-2
+
+[pinger]
+Jesya-o-1

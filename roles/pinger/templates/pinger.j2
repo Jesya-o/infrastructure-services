@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Check if the required utilities are available
+if ! command -v fping >/dev/null; then
+  logger "fping not found"
+  exit 1
+fi
+
+# Read configuration values from the pinger.conf file
+db_url=$(grep "^database_url=" /etc/pinger/pinger.conf | cut -d'=' -f2)
+db_name=$(grep "^database_name=" /etc/pinger/pinger.conf | cut -d'=' -f2)
+targets=$(grep "^targets=" /etc/pinger/pinger.conf | cut -d'=' -f2 | tr ',;' ' ')
+
+# Check if configuration values are empty
+if [ -z "$db_url" ] || [ -z "$db_name" ] || [ -z "$targets" ]; then
+  logger "Failed to get required values from the configuration file"
+  exit 1
+fi
+
+# Validate the database_name to prevent SQL injection
+if ! [[ "$db_name" =~ ^[a-zA-Z0-9_]+$ ]]; then
+  logger "Invalid characters in the database_name"
+  exit 1
+fi
+
+# Create the database if it doesn't exist
+curl -s -XPOST "${db_url}/query" --data-urlencode "q=CREATE DATABASE \"$db_name\""
+
+while true; do
+  result=$(fping -C1 -q $targets 2>&1 | awk '{print "rtt,dst="$1" rtt="$3}')
+  curl -s -XPOST "${db_url}/write?db=$db_name" --data-binary "$result"
+  sleep 1
+done
