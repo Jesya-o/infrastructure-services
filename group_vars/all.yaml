@@ -46,4 +46,6 @@ grafana_pwd: !vault |
 
 grafana_url: "http://{{ vm_names[1] | lower }}:3000"
 
-email: "ksenia.okuneva@mail.ru"
+pinger_user: pinger
+pinger_db_name: influx_db
+pinger_db_url: http://{{ vm_names[1] | lower }}:8086

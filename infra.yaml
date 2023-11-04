@@ -66,7 +66,7 @@
     - l
 
 - name: Pinger
-  hosts: pinger
+  hosts: monitoring
   become: yes
   roles:
     - pinger

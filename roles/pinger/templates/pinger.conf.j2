@@ -1,4 +1,4 @@
 # /etc/pinger/pinger.conf
-database_url=http://influxdb.epy.io:8086
-database_name=pinger_db
-targets=jesya-o-1,jesya-o-2,epy.io
+database_url={{ pinger_db_url }}
+database_name={{ pinger_db_name }}
+targets={{ vm_names[0] | lower }}, {{ vm_names[1] | lower }}

@@ -16,4 +16,3 @@
     dest: /etc/influxdb/influxdb.conf
   notify:
     - Restart InfluxDB
-

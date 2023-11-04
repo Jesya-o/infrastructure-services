@@ -29,11 +29,20 @@
     src: "{{ role_path }}/templates/grafana_provisioning.yaml.j2"
     dest: /etc/grafana/provisioning/dashboards/default.yaml
 
+- name: Copy Grafana datasource configurations
+  template:
+    src: datasources.yml.j2
+    dest: /etc/grafana/provisioning/datasources/datasources.yml
+  notify: Restart Grafana
+
 - name: Copy Grafana configuration
   template:
     src: grafana.ini.j2
     dest: /etc/grafana/grafana.ini
   notify: Restart Grafana
+
+- name: flush
+  ansible.builtin.meta: flush_handlers
 
 - name: Ensure Grafana service is started and enabled
   ansible.builtin.service:
@@ -41,31 +50,50 @@
     state: started
     enabled: yes
 
-- name: Check if the datasource already exists
-  uri:
-    url: http://localhost:3000/api/datasources/name/Prometheus
-    method: GET
-    headers:
-      Authorization: "Basic SmVzeWEtbzp0b2pp"
-    status_code: 200
-    validate_certs: no
-  ignore_errors: yes
-  register: datasource_exists
+# - name: Check if the datasource already exists
+#   uri:
+#     url: http://localhost:3000/api/datasources/name/Prometheus
+#     method: GET
+#     headers:
+#       Authorization: "Basic SmVzeWEtbzp0b2pp"
+#     status_code: 200
+#     validate_certs: no
+#   ignore_errors: yes
+#   register: datasource_exists
 
-- name: Configure Grafana datasource if not already configured
-  when: datasource_exists.status != 200
-  uri:
-    url: http://localhost:3000/api/datasources
-    method: POST
-    body: '{
-      "name": "Prometheus",
-      "type": "prometheus",
-      "url": "http://jesya-o-2:9090/prometheus",
-      "access": "proxy",
-      "isDefault": true
-    }'
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Basic SmVzeWEtbzp0b2pp"
-    status_code: 200
-    validate_certs: no
+# - name: Configure Grafana datasource Prometheus if not already configured
+#   when: datasource_exists.status != 200
+#   uri:
+#     url: http://localhost:3000/api/datasources
+#     method: POST
+#     body: '{
+#       "name": "Prometheus",
+#       "type": "prometheus",
+#       "url": "http://jesya-o-2:9090/prometheus",
+#       "access": "proxy",
+#       "isDefault": true
+#     }'
+#     headers:
+#       Content-Type: "application/json"
+#       Authorization: "Basic SmVzeWEtbzp0b2pp"
+#     status_code: 200
+#     validate_certs: no
+
+# - name: Configure Grafana datasource InfluxDB if not already configured
+#   # when: datasource_exists.status != 200
+#   uri:
+#     url: http://localhost:3000/api/datasources
+#     method: POST
+#     body: '{{ 
+#       "name": "influxdb:{{ pinger_db_name }}",
+#       "type": "influxdb",
+#       "url": "{{ pinger_db_url }}",
+#       "access": "proxy",
+#       "isDefault": true
+#     }}'
+#     body_format: json
+#     headers:
+#       Content-Type: "application/json"
+#       Authorization: "Basic SmVzeWEtbzp0b2pp"
+#     status_code: 200
+#     validate_certs: no
