@@ -106,10 +106,47 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "query": "SELECT mean(\"rtt\") FROM \"ping_results\" WHERE $timeFilter GROUP BY time($__interval), \"host\" fill(null)\n",
-          "rawQuery": true,
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "dst::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "rtt",
+          "orderByTime": "ASC",
+          "policy": "default",
           "refId": "A",
-          "resultFormat": "time_series"
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rtt"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
       "title": "Panel Title",
@@ -800,13 +837,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "IIS",
   "uid": "dd61128f-3103-4e99-a685-dbd722e9ed0d",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
