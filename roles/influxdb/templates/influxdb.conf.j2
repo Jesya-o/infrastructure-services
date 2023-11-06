@@ -10,11 +10,14 @@
   dir = "/var/lib/influxdb/data"
   engine = "tsm1"
   wal-dir = "/var/lib/influxdb/wal"
+  query-log-enabled = false
 
 [http]
   enabled = true
   auth-enabled = false
   bind-address = ":8086"
+  log-enabled = false
+  write-tracing = false
 
 [[udp]]
   enabled = true

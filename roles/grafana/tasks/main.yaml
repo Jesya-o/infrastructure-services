@@ -23,11 +23,13 @@
   copy:
     src: "{{ role_path }}/files/main.json"
     dest: /etc/grafana/provisioning/dashboards/main.json
+  notify: Restart Grafana
 
 - name: Copy dashboard for logging to remote host
   copy:
     src: "{{ role_path }}/files/logging.json"
     dest: /etc/grafana/provisioning/dashboards/logging.json
+  notify: Restart Grafana
 
 - name: Copy provisioning configuration file to the remote host
   template:
