@@ -49,7 +49,7 @@
     - n
 
 - name: Monitoring
-  hosts: monitoring
+  hosts: prometheus
   become: yes
   roles:
     - prometheus
@@ -57,7 +57,7 @@
     - p
 
 - name: Monitoring
-  hosts: monitoring
+  hosts: grafana
   become: yes
   roles:
     - grafana
@@ -65,7 +65,7 @@
     - g
 
 - name: Logging
-  hosts: monitoring
+  hosts: influxdb
   become: yes
   roles:
     - influxdb
@@ -73,7 +73,7 @@
     - l
 
 - name: Pinger
-  hosts: monitoring
+  hosts: pinger
   become: yes
   roles:
     - pinger

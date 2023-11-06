@@ -54,7 +54,7 @@
 - name: Create a custom rsyslog configuration file
   copy:
     content: |
-      *.* @{{ vm_names[1] | lower }}:{{ telegraf_udp_port }};RSYSLOG_SyslogProtocol23Format
+      *.* @{{ influxdb }}:{{ telegraf_udp_port }};RSYSLOG_SyslogProtocol23Format
     dest: /etc/rsyslog.d/99-telegraf.conf
   notify:
     - Restart rsyslog

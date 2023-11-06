@@ -9,7 +9,7 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://{{ vm_names[1] | lower }}:9090/prometheus
+    url: http://{{ prometheus }}:9090/prometheus
 
   - name: DS_INFLUXDB
     type: influxdb

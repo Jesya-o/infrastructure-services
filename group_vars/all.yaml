@@ -58,3 +58,5 @@ dashboard_names:
   - logging
 
 dashboard_template_id: 12433
+influxdb: influxdb
+prometheus: prometheus
