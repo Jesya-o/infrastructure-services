@@ -18,10 +18,178 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "1": {
+                  "index": 0,
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0.5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "bind_up",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Bind9",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "1": {
+                  "index": 0,
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0.5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "influxdb_exporter_stats_query_success",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "InfluxDB",
+      "type": "stat"
+    },
     {
       "datasource": {
         "type": "influxdb",
@@ -83,8 +251,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
+        "w": 16,
+        "x": 8,
         "y": 0
       },
       "id": 8,
@@ -197,18 +365,16 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 8
+        "y": 4
       },
-      "id": 3,
+      "id": 11,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "fields": "",
           "values": false
         },
@@ -223,17 +389,19 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "bind_up",
+          "exemplar": false,
+          "expr": "nginx_up",
+          "format": "time_series",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Bind9",
+      "title": "Nginx",
       "type": "stat"
     },
     {
@@ -281,7 +449,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 8
+        "y": 4
       },
       "id": 4,
       "options": {
@@ -382,7 +550,7 @@
       "gridPos": {
         "h": 12,
         "w": 16,
-        "x": 8,
+        "x": 0,
         "y": 8
       },
       "id": 2,
@@ -491,10 +659,10 @@
         ]
       },
       "gridPos": {
-        "h": 16,
-        "w": 24,
-        "x": 0,
-        "y": 20
+        "h": 12,
+        "w": 8,
+        "x": 16,
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -605,7 +773,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 36
+        "y": 20
       },
       "id": 7,
       "options": {
@@ -702,7 +870,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 36
+        "y": 20
       },
       "id": 6,
       "options": {
@@ -797,7 +965,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 44
+        "y": 28
       },
       "id": 5,
       "options": {
@@ -828,6 +996,122 @@
       ],
       "title": "DNS queries per minute",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "1": {
+                  "index": 0,
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0.5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "rate(influxdb_write_write_ok[1m])",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "InfluxDB write rate",
+      "type": "timeseries"
     }
   ],
   "refresh": "5s",
@@ -844,6 +1128,6 @@
   "timezone": "",
   "title": "Monitoring",
   "uid": "dd61128f-3103-4e99-a685-dbd722e9ed0d",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

@@ -31,3 +31,9 @@ scrape_configs:
       {% for host in groups['nginx_and_resolver_servers'] %}
       - targets: ['{{ host }}:9113']
       {% endfor %}
+
+  - job_name: 'influxdb'
+    static_configs:
+      {% for host in groups['influxdb'] %}
+      - targets: ['{{ host }}:9424']
+      {% endfor %}

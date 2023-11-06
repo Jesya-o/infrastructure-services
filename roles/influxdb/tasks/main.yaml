@@ -80,3 +80,32 @@
   # when: telegraf_config_check.rc != 0
   notify:
     - Restart Telegraf
+
+# - name: Create a directory for the exporter binary
+#   file:
+#     path: /usr/local/bin
+#     state: directory
+#     owner: prometheus
+#     group: prometheus
+#     mode: '0755'
+
+- name: Download InfluxDB Stats Exporter binary
+  get_url:
+    url: https://github.com/carlpett/influxdb_stats_exporter/releases/download/v0.1.1/influx_stats_exporter_linux_amd64
+    dest: /usr/local/bin/influxdb_stats_exporter
+    owner: prometheus
+    group: prometheus
+    mode: '0755'
+
+- name: Create a systemd service unit for InfluxDB Stats Exporter
+  template:
+    src: influxdb-stats-exporter.service.j2 
+    dest: /etc/systemd/system/prometheus-influxdb-stats-exporter.service
+  notify: Reload systemd 
+
+- name: Start and enable InfluxDB Stats Exporter service
+  systemd:
+    name: prometheus-influxdb-stats-exporter
+    enabled: yes
+    state: started
+
