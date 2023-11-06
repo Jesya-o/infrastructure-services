@@ -1,4 +1,11 @@
+---
 - name: Restart InfluxDB
   service:
     name: influxdb
     state: restarted
+
+- name: Restart Telegraf
+  systemd:
+    name: telegraf
+    state: restarted
+  

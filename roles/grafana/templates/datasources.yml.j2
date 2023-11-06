@@ -9,4 +9,10 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://jesya-o-2:9090/prometheus
+    url: http://{{ vm_names[1] | lower }}:9090/prometheus
+
+  - name: DS_INFLUXDB
+    type: influxdb
+    access: proxy
+    url: {{ pinger_db_url }}
+    database: {{ telegraf_db_name }}

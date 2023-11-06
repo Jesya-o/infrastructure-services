@@ -149,7 +149,7 @@
           "tags": []
         }
       ],
-      "title": "Panel Title",
+      "title": "fping",
       "type": "timeseries"
     },
     {
@@ -842,7 +842,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "IIS",
+  "title": "Monitoring",
   "uid": "dd61128f-3103-4e99-a685-dbd722e9ed0d",
   "version": 1,
   "weekStart": ""

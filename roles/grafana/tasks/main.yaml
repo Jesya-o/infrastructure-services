@@ -19,15 +19,21 @@
       - "{{ hostvars[inventory_hostname].public_url }}"
       - "{{ hostvars[inventory_hostname].ansible_port | regex_search('^[0-9]{2}')  }}"
 
-- name: Copy main.json to remote host
+- name: Copy dashboard for monitoring to remote host
   copy:
-    src: "{{ role_path }}/files/main.json"
-    dest: /etc/grafana/provisioning/dashboards/main.json
+    src: "{{ role_path }}/files/{{ dashboard_names[0] }}.json"
+    dest: /etc/grafana/provisioning/dashboards/{{ dashboard_names[0] }}.json
+
+- name: Copy dashboard for logging to remote host
+  copy:
+    src: "{{ role_path }}/files/{{ dashboard_names[1] }}.json"
+    dest: /etc/grafana/provisioning/dashboards/{{ dashboard_names[1] }}.json
 
 - name: Copy provisioning configuration file to the remote host
   template:
     src: "{{ role_path }}/templates/grafana_provisioning.yaml.j2"
     dest: /etc/grafana/provisioning/dashboards/default.yaml
+  notify: Restart Grafana
 
 - name: Copy Grafana datasource configurations
   template:

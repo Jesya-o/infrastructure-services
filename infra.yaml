@@ -53,12 +53,19 @@
   become: yes
   roles:
     - prometheus
+  tags:
+    - p
+
+- name: Monitoring
+  hosts: monitoring
+  become: yes
+  roles:
     - grafana
   tags:
-    - m
+    - g
 
 - name: Logging
-  hosts: all
+  hosts: monitoring
   become: yes
   roles:
     - influxdb
@@ -71,4 +78,4 @@
   roles:
     - pinger
   tags:
-    - p
+    - pi

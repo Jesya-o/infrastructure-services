@@ -44,3 +44,23 @@
   ansible.builtin.apt:
     name: ca-certificates=20230311ubuntu0.20.04.1
     state: present
+
+- name: Install rsyslog
+  apt:
+    name: rsyslog
+    state: present
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Create a custom rsyslog configuration file
+  copy:
+    content: |
+      *.* @{{ vm_names[1] | lower }}:{{ telegraf_udp_port }};RSYSLOG_SyslogProtocol23Format
+    dest: /etc/rsyslog.d/99-telegraf.conf
+  notify:
+    - Restart rsyslog
+
+- name: Ensure rsyslog service is started and enabled
+  service:
+    name: rsyslog
+    state: started
+    enabled: yes
