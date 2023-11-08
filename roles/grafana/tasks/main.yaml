@@ -13,19 +13,13 @@
     name: grafana
     state: present
 
-- name: check port
-  ansible.builtin.debug:
-    msg: 
-      - "{{ hostvars[inventory_hostname].public_url }}"
-      - "{{ hostvars[inventory_hostname].ansible_port | regex_search('^[0-9]{2}')  }}"
-
-- name: Copy dashboard for monitoring to remote host
+- name: Copy dashboard for monitoring
   copy:
     src: "{{ role_path }}/files/main.json"
     dest: /etc/grafana/provisioning/dashboards/main.json
   notify: Restart Grafana
 
-- name: Copy dashboard for logging to remote host
+- name: Copy dashboard for logs
   copy:
     src: "{{ role_path }}/files/logging.json"
     dest: /etc/grafana/provisioning/dashboards/logging.json

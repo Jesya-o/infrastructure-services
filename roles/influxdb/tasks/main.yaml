@@ -32,62 +32,25 @@
     state: started
     enabled: yes
 
+
 - name: Download Telegraf package
   get_url:
     url: https://dl.influxdata.com/telegraf/releases/telegraf_1.28.2-1_amd64.deb 
     dest: /tmp/telegraf_1.28.2_amd64.deb
     checksum: "sha256:e074b612e863d517d8908107352333933b3a26f1746c9840d6bc2c3d2463df70"
 
-- name: Check if Telegraf is installed
-  command: dpkg -l telegraf
-  register: telegraf_installed
-  ignore_errors: true
-  changed_when: false
-
-- name: Install Telegraf if not already installed
+- name: Install Telegraf
   apt:
     deb: /tmp/telegraf_1.28.2_amd64.deb
     state: present
-  when: telegraf_installed.rc != 0
 
-
-# - name: Generate Telegraf configuration
-#   command: telegraf config --input-filter syslog --output-filter influxdb > /etc/telegraf/telegraf.conf
-#   args:
-#     creates: /etc/telegraf/telegraf.conf
-
-- name: Check if Telegraf config contains required sections
-  ansible.builtin.shell: 'grep -Eq "^\s*\[\[outputs.influxdb\]\]" /etc/telegraf/telegraf.conf && grep -Eq "^\s*\[\[inputs.syslog\]\]" /etc/telegraf/telegraf.conf'
-  ignore_errors: yes
-  changed_when: false
-  register: telegraf_config_check
-
-- name: Handle Telegraf configuration
-  debug:
-    msg: "Checking if there were placed correct configs."
-  when: telegraf_config_check.rc == 2 
-
-- name: Add Telegraf config section
-  ansible.builtin.blockinfile:
-    path: /etc/telegraf/telegraf.conf
-    block: |
-      [[outputs.influxdb]]
-        urls = ["{{ influxdb_udp }}"]
-        database = "{{ telegraf_db_name }}"
-
-      [[inputs.syslog]]
-        server = "udp://:{{ telegraf_udp_port }}"
-  # when: telegraf_config_check.rc != 0
+- name: Configure Telegraf
+  template:
+    src: telegraf.conf.j2
+    dest: /etc/telegraf/telegraf.conf
   notify:
     - Restart Telegraf
 
-# - name: Create a directory for the exporter binary
-#   file:
-#     path: /usr/local/bin
-#     state: directory
-#     owner: prometheus
-#     group: prometheus
-#     mode: '0755'
 
 - name: Download InfluxDB Stats Exporter binary
   get_url:
@@ -108,4 +71,3 @@
     name: prometheus-influxdb-stats-exporter
     enabled: yes
     state: started
-
