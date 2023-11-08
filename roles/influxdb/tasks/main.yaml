@@ -73,3 +73,12 @@
     name: prometheus-influxdb-stats-exporter
     enabled: yes
     state: started
+
+# InfluxDB backup
+- name: Create influxdb directory, created and owned by backup
+  ansible.builtin.file:
+    path: /home/backup/influxdb
+    state: directory
+    owner: '{{ backup_user }}'
+    group: '{{ backup_user }}'
+    mode: '0744'

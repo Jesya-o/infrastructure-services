@@ -49,7 +49,7 @@
 # Backup
 - name: Create backup user
   ansible.builtin.user:
-    name: backup
+    name: '{{ backup_user }}'
     home: /home/backup
     shell: /bin/bash
     generate_ssh_key: true
@@ -58,5 +58,19 @@
   ansible.builtin.template:
     src: known_hosts
     dest: /home/backup/.ssh/known_hosts
-    owner: backup
-    group: backup
+    owner: '{{ backup_user }}'
+    group: '{{ backup_user }}'
+
+- name: Create restore directory, created and owned by backup
+  ansible.builtin.file:
+    path: /home/backup/restore
+    state: directory
+    owner: '{{ backup_user }}'
+    group: '{{ backup_user }}'
+    mode: '0744'
+
+# Duplicity tool
+- name: Install Duplicity package from Ubuntu APT repository
+  apt:
+    name: duplicity
+    state: present

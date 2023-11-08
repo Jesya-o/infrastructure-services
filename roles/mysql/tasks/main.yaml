@@ -1,4 +1,6 @@
 ---
+
+# MySQL
 - name: Install MySQL server
   ansible.builtin.apt:
     name: mysql-server
@@ -39,6 +41,7 @@
   tags:
     - create_mysql_user
 
+# MySQL exporter
 - name: Install MySQL exporter
   apt:
     name: prometheus-mysqld-exporter
@@ -70,3 +73,34 @@
     state: started
     enabled: yes
   notify: Restart MySQL exporter
+
+# Backup
+- name: Create mysql directory, created and owned by backup
+  ansible.builtin.file:
+    path: /home/backup/mysql
+    state: directory
+    owner: '{{ backup_user }}'
+    group: '{{ backup_user }}'
+    mode: '0744'
+
+- name: Create MySQL user backup with LOCK TABLES, SELECT privileges on agama database
+  mysql_user:
+    name: '{{ backup_user }}'
+    host: "%"
+    password: "{{ mysql_backup_user_password }}"
+    priv: "{{ mysql_database }}.*:LOCK TABLES,SELECT"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create .my.cnf file for user 'backup'
+  template:
+    src: my_backup.cnf.j2
+    dest: /home/backup/.my.cnf
+    owner: '{{ backup_user }}'
+    group: '{{ backup_user }}'
+    mode: '700'
+
+- name: Add a MySQL cron tab file
+  ansible.builtin.template:
+    src: mysql-backup
+    dest: /etc/cron.d/mysql-backup
