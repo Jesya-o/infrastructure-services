@@ -1,50 +1,31 @@
 ---
 
-# - name: Create Juri user
-#   ansible.builtin.user:
-#     name: juri
-#     state: present
-
-# - name: Ensure Juri's authorized key is present
-#   ansible.posix.authorized_key:
-#     user: juri
-#     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7TPxJ4rbrgO+cZzIzsU+PP6mk/3Njyb0dIFeCxuXWLhl2hNz5/4fzJUYxJV4ZYOE3aVLF14NrQec0uBvn4OKtCEXfBb+dNJqn8Zvqef529VexwAEha1qwCNKX4+mibYTCwX5sl2Vlu/qTQccc/ep2Te7Q561kVyl8WgpBnTrP+ogbXB5RDa1FxGx/Cwd7HN0p7RAob4efnGhpML8mrydnf0L8vvcJreAJLfjDwIdA1SYPBrSLKIrOhnncB0cEoFCbDD/LLNAG0igD3qgfu7FXEBvdFQQqj/9bxm3arg70dOb7yViqN+VHJ3sF7cnnRSuTSBuaLtSO9RJKfhaPLILDzdyl3HLnLbfmKZSqZN0nqczve8VRapLRlnKSpDDwadP4uiPuXDUAz0OwE7IYvbQUflZYiRrFZc9F6Pwp9W9PLZ+RoISY5YXWKsNbFIOTrhe2JfwoceCZgtxe5kZmlEq7I6Thd6EBPv7X/BlNZBpcgu1oaCBseQWsHkQoFcuZgLE="
-#     state: present
-# - name: Create Roman user
-#   ansible.builtin.user:
-#     name: roman
-#     state: present
-# - name: Ensure Roman's authorized key is present
-#   ansible.posix.authorized_key:
-#     user: roman
-#     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDFligqCTgPl8lcKVsgHq9K9zEelCfTP+hcuG9tdhHgBoHwlZPilvTmi4veyORSGTuS9x8XwJuDAnAZsT75TFQVbOjp0XqqcpV/jF4ix6mS6kmdJzzruAaYSI6FWit4ZeRz8/XfNOmg2xaPn3A6hWAUAOhpeOiXtKcSZVOIitJOirjjYrK5Sq+cW8pFGjVWpweU46WwKYoPr1EyEN1PqUjDTOU4LvShEK1TF/kZOeRMysPf9lz1JQO6BKEr0oRWaROCMZwuTDlmh9i0LZEwje6e5ADxMyTHp9fgpCV9a4hDOE7EQdmePDtDO9PHjGQD3m060ydOiFbjSI98q0puzEKxpfzcyMEb/ztdiLWOBO5ANOMzADZ9f+D0S3bqHbSlq/pHXJ2aF2DfROKOrIg1ABFcgz4ugaGhQzYmxsKc2SXgzk/D7952k+FP5FxvW5FpX+xgkMGkt2XlLzjpvZO5eH/rHDppO1v+Pr876di5NbiXCC0GL3C80H2dl4QIrpeDtlFIO5spVtMqFBbUcXticNC9C6dXjOL5p5jhLq82tKHlc5Mnx0cyPRHeO8XCkA0MsipMOGy+tIiOPKaO/dDMT7kiYZKYvaNaUrmdB0MISydE8kTknHBVX9b/qOOysHglMJgmfIYP2YWXDVQFWq9hkWFVIS+yPiaEViphRKbTZMBbLQ=="
-#     state: present
-
+# Cache update
 - name: Update APT cache
   ansible.builtin.apt:
     cache_valid_time: 86400
 
-- name: Install Prometheus Node Exporter
+# Enable Prometheus node exporters
+- name: Install Prometheus node exporter
   ansible.builtin.apt:
     name: prometheus-node-exporter
     state: present
   notify:
     - Restart Node Exporter service
 
-- name: Start and enable Node Exporter
+- name: Start and enable Prometheus node exporter
   systemd:
     name: prometheus-node-exporter
     enabled: yes
     state: started
 
-# - name: Ansible ping module
-#   ansible.builtin.ping:
-
+# Certificates Update
 - name: Ensure ca-certificates version is 20230311ubuntu0.20.04.1 or newer
   ansible.builtin.apt:
     name: ca-certificates=20230311ubuntu0.20.04.1
     state: present
 
+# Rsyslog configuration
 - name: Install rsyslog
   apt:
     name: rsyslog
@@ -65,6 +46,7 @@
     state: started
     enabled: yes
 
+# Backup
 - name: Create backup user
   ansible.builtin.user:
     name: backup
@@ -78,10 +60,3 @@
     dest: /home/backup/.ssh/known_hosts
     owner: backup
     group: backup
-
-# - name: Add backup server SSH key to known hosts
-#   ansible.builtin.known_hosts:
-#     path: /home/backup/.ssh/known_hosts
-#     state: present
-#     key: '{{ backup }} {{ backup_server_public_key }}'
-

@@ -1,3 +1,4 @@
+---
 - name: Add Grafana APT GPG key
   ansible.builtin.apt_key:
     url: https://packages.grafana.com/gpg.key
