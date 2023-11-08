@@ -64,3 +64,24 @@
     name: rsyslog
     state: started
     enabled: yes
+
+- name: Create backup user
+  ansible.builtin.user:
+    name: backup
+    home: /home/backup
+    shell: /bin/bash
+    generate_ssh_key: true
+
+- name: Create file with known hosts
+  ansible.builtin.template:
+    src: known_hosts
+    dest: /home/backup/.ssh/known_hosts
+    owner: backup
+    group: backup
+
+# - name: Add backup server SSH key to known hosts
+#   ansible.builtin.known_hosts:
+#     path: /home/backup/.ssh/known_hosts
+#     state: present
+#     key: '{{ backup }} {{ backup_server_public_key }}'
+
