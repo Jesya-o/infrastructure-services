@@ -1,5 +1,9 @@
 10 16 * * 1     {{ backup_user }}    mysqldump agama > /home/backup/mysql/agama.sql && duplicity --no-encryption full /home/backup/mysql/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/mysql
 10 20 * * 2-7   {{ backup_user }}    mysqldump agama > /home/backup/mysql/agama.sql && duplicity --no-encryption incremental /home/backup/mysql/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/mysql
 
+# Restoration process
 # sudo -u backup duplicity --no-encryption restore rsync://Jesya-o@backup.epy.io//home/Jesya-o/mysql /home/backup/restore/mysql
 # mysql agama < /home/backup/restore/mysql/agama.sql
+
+# First full backup
+# <current minutes + 5> <current hours in UTC> * * <current day of week>     {{ backup_user }}    mysqldump agama > /home/backup/mysql/agama.sql && duplicity --no-encryption full /home/backup/mysql/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/mysql

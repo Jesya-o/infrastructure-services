@@ -82,3 +82,8 @@
     owner: '{{ backup_user }}'
     group: '{{ backup_user }}'
     mode: '0744'
+
+- name: Add an influxdb cron tab
+  ansible.builtin.template:
+    src: influxdb-backup
+    dest: /etc/cron.d/influxdb-backup
