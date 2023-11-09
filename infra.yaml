@@ -9,6 +9,7 @@
 
 - name: DNS server
   hosts: dns_servers
+  gather_facts: yes
   become: yes
   roles:
     - bind
@@ -17,6 +18,7 @@
 
 - name: Resolver service
   hosts: nginx_and_resolver_servers
+  gather_facts: yes
   become: yes
   roles:
     - resolver
@@ -25,6 +27,7 @@
 
 - name: Database server
   hosts: db_servers
+  gather_facts: no
   become: yes
   roles: 
     - mysql
@@ -42,14 +45,16 @@
 
 - name: Nginx
   hosts: nginx_and_resolver_servers
+  gather_facts: no
   become: yes
   roles: 
     - nginx
   tags:
     - n
 
-- name: Monitoring
+- name: Prometheus
   hosts: prometheus
+  gather_facts: no
   become: yes
   roles:
     - prometheus
@@ -66,6 +71,7 @@
 
 - name: Logging
   hosts: influxdb
+  gather_facts: no
   become: yes
   roles:
     - influxdb
