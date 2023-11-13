@@ -51,7 +51,7 @@ pinger_user: pinger
 pinger_db_name: influx_db
 pinger_db_url: http://{{ vm_names[1] | lower }}:8086
 influxdb_udp: udp://127.0.0.1:8089
-telegraf_db_name: telegraf
+telegraf_db_name: udp
 telegraf_udp_port: 10514
 
 dashboard_names: 
