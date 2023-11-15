@@ -10,3 +10,4 @@
 
 # First full backup
 # <current minutes + 5> <current hours in UTC> * * <current day of week> influxd backup -portable -database telegraf /home/backup/influxdb && duplicity --no-encryption full /home/backup/influxdb/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb
+/

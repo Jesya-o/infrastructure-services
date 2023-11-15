@@ -27,12 +27,13 @@
 
 - name: Database server
   hosts: db_servers
-  gather_facts: no
+  gather_facts: yes
   become: yes
   roles: 
     - mysql
   tags:
     - db
+    - app
 
 - name: Web server
   hosts: web_servers
@@ -42,6 +43,7 @@
     - uwsgi
   tags:
     - a
+    - app
 
 - name: Nginx
   hosts: nginx_and_resolver_servers

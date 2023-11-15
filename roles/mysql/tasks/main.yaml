@@ -1,16 +1,12 @@
 ---
 
 # MySQL
-- name: Install MySQL server
+- name: Install MySQL server and pymysql
   ansible.builtin.apt:
-    name: mysql-server
+    name: 
+      - mysql-server
+      - python3-pymysql
     state: present
-
-- name: Override MySQL configuration file
-  ansible.builtin.copy:
-    src: files/override.cnf
-    dest: /etc/mysql/mysql.conf.d/override.cnf
-  notify: Restart MySQL
 
 - name: Ensure MySQL service is enabled and running
   ansible.builtin.service: 
@@ -18,18 +14,19 @@
     state: started
     enabled: true
 
-- name: Install MySQL module for Python 3.X if not installed
-  ansible.builtin.apt:
-    name: python3-pymysql
-    state: present
-  when: "'3' in ansible_python_version"
-  tags:
-    - install_mysql_module
+- name: Override MySQL configuration file
+  template:
+    src: override.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/override.cnf
+  notify: Restart MySQL
 
 - name: Create MySQL database
   community.mysql.mysql_db:
     name: "{{ mysql_database }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  notify:
+     - Reset MySQL source
+     - Reset MySQL replica
 
 - name: MySQL user
   community.mysql.mysql_user:
@@ -40,6 +37,27 @@
     login_unix_socket: /var/run/mysqld/mysqld.sock
   tags:
     - create_mysql_user
+
+# MySQL replica
+- name: MySQL replication user
+  community.mysql.mysql_user:
+     name: "{{ mysql_replica_user }}"
+     password: "{{ mysql_replica_password }}"
+     priv: "*.*:REPLICATION SLAVE"
+     host: "%"
+     login_unix_socket: /var/run/mysqld/mysqld.sock
+  no_log: true
+
+- name: Set up a MySQL replica server to a read-only mode
+  community.mysql.mysql_variables:
+     variable: read_only
+     value: "{{ 'OFF' if inventory_hostname == mysql_host else 'ON' }}"
+     mode: persist
+     login_unix_socket: /var/run/mysqld/mysqld.sock
+  notify:
+     - Reset MySQL source
+     - Reset MySQL replica
+
 
 # MySQL exporter
 - name: Install MySQL exporter
@@ -52,7 +70,7 @@
     name: "{{ mysql_exporter_user }}"
     password: "{{ mysql_exporter_password }}"
     priv: '*.*:PROCESS,REPLICATION CLIENT,SELECT'
-    host: 'localhost'
+    host: '%'
     login_unix_socket: /var/run/mysqld/mysqld.sock
 
 - name: Create .my.cnf file
@@ -62,6 +80,14 @@
     owner: prometheus
     group: prometheus
     mode: '0600'
+  notify: 
+    - Daemon reload
+    - Restart MySQL exporter
+
+- name: Create prometheus-mysqld-exporter file
+  ansible.builtin.template:
+    src: prometheus-mysqld-exporter.j2
+    dest: /etc/default/prometheus-mysqld-exporter
   notify: Restart MySQL exporter
 
 - name: flush
