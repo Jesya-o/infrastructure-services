@@ -1,0 +1,54 @@
+---
+- name: Add Grafana APT GPG key
+  ansible.builtin.apt_key:
+    url: https://packages.grafana.com/gpg.key
+    state: present
+
+- name: Add Grafana APT repository
+  ansible.builtin.apt_repository:
+    repo: deb https://packages.grafana.com/oss/deb stable main
+    state: present
+
+- name: Install Grafana
+  ansible.builtin.apt:
+    name: grafana
+    state: present
+
+- name: Copy dashboard for monitoring
+  copy:
+    src: "{{ role_path }}/files/main.json"
+    dest: /etc/grafana/provisioning/dashboards/main.json
+  notify: Restart Grafana
+
+- name: Copy dashboard for logs
+  copy:
+    src: "{{ role_path }}/files/logging.json"
+    dest: /etc/grafana/provisioning/dashboards/logging.json
+  notify: Restart Grafana
+
+- name: Copy provisioning configuration file to the remote host
+  template:
+    src: "{{ role_path }}/templates/grafana_provisioning.yaml.j2"
+    dest: /etc/grafana/provisioning/dashboards/default.yaml
+  notify: Restart Grafana
+
+- name: Copy Grafana datasource configurations
+  template:
+    src: datasources.yml.j2
+    dest: /etc/grafana/provisioning/datasources/datasources.yml
+  notify: Restart Grafana
+
+- name: Copy Grafana configuration
+  template:
+    src: grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+  notify: Restart Grafana
+
+- name: flush
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure Grafana service is started and enabled
+  ansible.builtin.service:
+    name: grafana-server
+    state: started
+    enabled: yes

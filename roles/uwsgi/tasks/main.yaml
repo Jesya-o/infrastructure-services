@@ -8,7 +8,7 @@
     - uwsgi-plugin-python3
 
 - name: Copy uWSGI configuration for AGAMA
-  ansible.builtin.template:
+  template:
     src: templates/agama.ini.j2
     dest: /etc/uwsgi/apps-enabled/agama.ini
     owner: agama
@@ -16,7 +16,7 @@
   notify: Restart uWSGI service
 
 - name: uWSGI service
-  ansible.builtin.service:
+  service:
     name: uwsgi
     state: started
     enabled: true

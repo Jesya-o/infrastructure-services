@@ -47,6 +47,9 @@ grafana_pwd: !vault |
           3632
 
 grafana_url: "http://{{ vm_names[1] | lower }}:3000"
+grafana_port: 3001
+
+agama_port: 8001
 
 pinger_user: pinger
 pinger_db_name: influx_db

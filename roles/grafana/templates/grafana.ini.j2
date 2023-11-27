@@ -1,3 +1,6 @@
+[dashboards]
+default_home_dashboard_path = /etc/grafana/provisioning/dashboards/main.json
+
 [server]
 root_url = http://{{ hostvars[inventory_hostname].public_url }}:{{ hostvars[inventory_hostname].ansible_port | regex_search('^[0-9]{2}')  }}80/grafana
 serve_from_sub_path = true

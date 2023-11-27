@@ -63,6 +63,14 @@
   tags:
     - p
 
+- name: Docker
+  hosts: docker
+  become: yes
+  roles:
+    - docker
+  tags:
+    - d
+
 - name: Monitoring
   hosts: grafana
   become: yes

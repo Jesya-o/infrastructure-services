@@ -7,22 +7,27 @@ server {
 		include uwsgi_params;
 	}
 
-{% if inventory_hostname in groups['monitoring'] %}
-	location /prometheus {
-        proxy_pass http://localhost:9090; 
+{% if inventory_hostname in groups['prometheus'] %}
+    location /prometheus {
+            proxy_pass http://localhost:9090;               
     }
+{% endif %}
 
-	location /grafana {
-        proxy_set_header Host $http_host;
-        proxy_pass http://localhost:3000;
+
+{% if inventory_hostname in groups['grafana'] %}
+    location /grafana {
+            proxy_set_header Host $http_host;
+            proxy_pass http://localhost:{{ grafana_port }};
     }
 {% endif %}
 }
 
 server {
-    listen 127.0.0.1:8080;
+    listen 127.0.0.1:8080 default_server;
+    server_name _;
 
-    location /stub_status {
-        stub_status;
+
+    location = /stub_status {
+            stub_status;
     }
 }
