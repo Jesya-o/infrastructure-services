@@ -12,7 +12,7 @@ for port in "${ports[@]}"; do
 done
 
 # Create a temporary file
-tmp_file="/home/jesya-o/Projects/iis/hosts.tmp"
+tmp_file="/home/jesya-o/Projects/infra/hosts.tmp"
 
 # Track if the first two occurrences have been updated
 updated_1=0
@@ -29,7 +29,7 @@ while IFS= read -r line; do
   else
     echo "$line" >> "$tmp_file"
   fi
-done < /home/jesya-o/Projects/iis/ica0002/hosts
+done < /home/jesya-o/Projects/infra/ica0002/hosts
 
 # Replace the original file with the updated one
-mv "$tmp_file" /home/jesya-o/Projects/iis/ica0002/hosts
+mv "$tmp_file" /home/jesya-o/Projects/infra/ica0002/hosts
