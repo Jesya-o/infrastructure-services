@@ -37,3 +37,15 @@ scrape_configs:
       {% for host in groups['influxdb'] %}
       - targets: ['{{ host }}:9424']
       {% endfor %}
+
+  - job_name: 'haproxy'
+    static_configs:
+      {% for host in groups['web_servers'] %}
+      - targets: ['{{ host }}:9101']
+      {% endfor %}
+
+  - job_name: 'keepalived'
+    static_configs:
+      {% for host in groups['web_servers'] %}
+      - targets: ['{{ host }}:9165']
+      {% endfor %}
