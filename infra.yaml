@@ -73,6 +73,7 @@
     - agama
   tags:
     - a
+    - app
 
 - name: Web server
   hosts: web_servers

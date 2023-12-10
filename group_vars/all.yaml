@@ -77,8 +77,8 @@ prometheus: prometheus
 
 # Agama
 agama_path: /opt/agama/
-agama_port: 8001
-agama_containers_per_host: 3
+agama_port: 8000
+agama_containers_per_host: 2
 
 #Telegraf, InfluxDB
 pinger_user: pinger

@@ -35,9 +35,18 @@
   loop_control:
     label: "{{ 'Agama Container ' ~ item }}"
 
+# - name: Run docker info without templating
+#   command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"
+#   register: current_containers_raw
+
 - name: Run docker info without templating
   command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"
   register: current_containers_raw
+  changed_when: "current_containers_raw.stdout == previous_containers_raw.stdout | default('')"
+
+- name: Save the current containers info
+  set_fact:
+    previous_containers_raw: "{{ current_containers_raw.stdout }}"
 
 - name: Parse the number of running containers
   set_fact:

@@ -30,6 +30,6 @@ listen ha_frontend
     stats uri /stats
 {% for host in groups['web_servers'] %}
 {%   for container in range(agama_containers_per_host) %}
-    server {{ host }}-ha_frontend-{{ container }} {{ host }}:{{ agama_port + container }} check
+    server {{ host }}-ha_frontend-{{ container + 1}} {{ host }}:{{ agama_port + container + 1 }} check
 {%   endfor %}
 {% endfor %}
