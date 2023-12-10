@@ -45,7 +45,7 @@
   notify: Restart Grafana
 
 - name: flush
-  ansible.builtin.meta: flush_handlers
+  meta: flush_handlers
 
 - name: Ensure Grafana service is started and enabled
   ansible.builtin.service:

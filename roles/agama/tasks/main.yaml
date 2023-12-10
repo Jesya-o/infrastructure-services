@@ -5,13 +5,13 @@
 
 - name: Create directory for agama
   file:
-    path: /opt/agama
+    path: '{{ agama_path }}'
     state: directory
 
 - name: Download dockerfile and agama.py files
   get_url:
     url: https://raw.githubusercontent.com/hudolejev/agama/master/{{ item }}
-    dest: /opt/agama
+    dest: '{{ agama_path }}'
   loop:
     - agama.py
     - Dockerfile
@@ -21,13 +21,60 @@
     name: agama
     source: build
     build:
-      path: /opt/agama
+      path: '{{ agama_path }}'
 
-- name: Install agama with a docker
+- name: Install agama with docker
   community.docker.docker_container:
-    name: agama
+    name: "agama{{ item }}"
     image: agama
-    published_ports: "{{ agama_port }}:8000"
+    published_ports: "{{ agama_port + item }}:8000"
     env:
-       AGAMA_DATABASE_URI=mysql+pymysql://{{ mysql_user }}:{{ mysql_password }}@{{ mysql_host }}/{{ mysql_database }}
+      AGAMA_DATABASE_URI: "mysql+pymysql://{{ mysql_user }}:{{ mysql_password }}@{{ mysql_host }}/{{ mysql_database }}"
     restart_policy: always
+  loop: "{{ range(1, agama_containers_per_host + 1) | list }}"
+  loop_control:
+    label: "{{ 'Agama Container ' ~ item }}"
+
+- name: Run docker info without templating
+  command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"
+  register: current_containers_raw
+
+- name: Parse the number of running containers
+  set_fact:
+    current_containers: "{{ current_containers_raw.stdout | int }}"
+
+- name: Check if Grafana container exists
+  community.general.docker_container_info:
+    name: grafana
+  register: grafana_container
+
+- name: Subtract 1 if Grafana container exists
+  when: grafana_container.exists | default(false)
+  set_fact:
+    current_containers: "{{ current_containers | int - 1 }}"
+
+# - name: Display type of current_containers
+#   debug:
+#     var: (current_containers|int ) > (agama_containers_per_host|int)
+
+
+- name: Stop and remove extra containers if necessary
+  when: (current_containers|int ) > (agama_containers_per_host|int)
+  block:
+
+    - name: Get a list of containers
+      shell: "docker ps"
+      register: all_containers
+
+    # - name: all containers
+    #   debug:
+    #     var: all_containers
+
+    - name: Remove extra containers
+      command: docker rm -f "agama{{ item.1 + 1 }}"
+      with_indexed_items: "{{ all_containers.stdout_lines[1:] | map('regex_search', '^\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(\\S+)$') | list }}"
+      when: all_containers.rc == 0
+      loop_control:
+        label: "{{ item.1 + 1 }}"
+      loop: "{{ range(current_containers|int - agama_containers_per_host|int + 1 , current_containers|int) | list }}"
+

@@ -1,0 +1,65 @@
+---
+- name: Install keepalived
+  apt:
+    name: keepalived
+    state: present
+
+- name: Add group
+  group:
+    name: keepalived_script
+
+- name: Add user
+  user:
+    name: keepalived_script
+    group: keepalived_script
+    create_home: yes
+
+- name: Add keepalived script
+  template:
+    src: vrrp_script.sh.j2
+    dest: /home/keepalived_script/vrrp_script.sh
+    mode: 555
+  notify: Restart keepalived
+
+- name: Add keepalived config
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+  notify: Restart keepalived
+
+- name: Create directory prometheus-keepalived-exporter
+  ansible.builtin.file:
+    path: /usr/local/bin/prometheus-keepalived-exporter
+    state: directory
+    mode: 0755
+
+- name: Download keepalived-exporter
+  unarchive:
+    src: http://backup/keepalived-exporter-1.2.0.linux-amd64.tar.gz
+    dest: /usr/local/bin/prometheus-keepalived-exporter
+    remote_src: yes
+    mode: 0755
+  notify: Restart keepalived exporter
+
+- name: Create keepalived exporter service
+  template:
+    src: prometheus-keepalived-exporter.service.j2
+    dest: /etc/systemd/system/prometheus-keepalived-exporter.service
+  notify:
+    - Reload daemon
+    - Restart keepalived exporter
+
+- name: flush
+  meta: flush_handlers
+
+- name: Ensure keepalived started and enabled
+  service:
+    name: keepalived
+    state: started
+    enabled: yes
+
+- name: Ensure keepalived exporter started and enabled
+  service:
+    name: prometheus-keepalived-exporter
+    state: started
+    enabled: yes

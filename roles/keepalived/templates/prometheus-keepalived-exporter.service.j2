@@ -1,0 +1,11 @@
+[Unit]
+Description=Keepalived Exporter Service
+Documentation=
+After=network-online.target
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/keepalived-exporter-1.2.0.linux-amd64/keepalived-exporter $ARGS
+
+[Install]
+WantedBy=multi-user.target

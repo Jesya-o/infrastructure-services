@@ -1,4 +1,12 @@
+# General
 github_username: Jesya-o
+startup_name: "epy.io"
+vm_names: 
+  - "Jesya-o-1"
+  - "Jesya-o-2"
+public_url: "193.40.156.67"
+
+# MySQL
 mysql_host: "{{ groups['db_servers'][0] }}"
 mysql_backup_host: "{{ groups['db_servers'] | reject('eq', mysql_host) | first | default(mysql_host) }}"
 mysql_database: agama
@@ -18,58 +26,6 @@ mysql_exporter_password:  !vault |
           38323633383962383733323538383264346233323262633930376536643432633837653134653162
           6665636338363636320a643334346466616534326266363862373932323061633962636437383365
           3062
-
-dns_allowed_networks:
-  - "192.168.42.0/23"
-  - "127.0.0.0/8"
-dns_forwarders:
-  - 8.8.8.8
-  - 1.1.1.1
-  - 9.9.9.9
-
-startup_name: "epy.io"
-vm_names: 
-  - "Jesya-o-1"
-  - "Jesya-o-2"
-zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
-named_conf_file_path: "/etc/bind/named.conf.options"
-named_conf_local_file_path: "/etc/bind/named.conf.local"
-
-public_url: "193.40.156.67"
-
-grafana_user: Jesya-o
-grafana_pwd: !vault | 
-          $ANSIBLE_VAULT;1.1;AES256
-          32643164333233393962633161396165666434326238633639666562346535623866376637663462
-          6231306433613030616538653236613137623433326138300a646266363031643537313463636239
-          33363134643734656531393234636464636163343566303663353533343836393133373266346439
-          6534313965663836310a383163303662303563633261613039336131363961353062613430633734
-          3632
-
-grafana_url: "http://{{ vm_names[1] | lower }}:3000"
-grafana_port: 3001
-
-agama_port: 8001
-
-pinger_user: pinger
-pinger_db_name: influx_db
-pinger_db_url: http://{{ vm_names[1] | lower }}:8086
-influxdb_udp: udp://127.0.0.1:8089
-telegraf_db_name: udp
-telegraf_udp_port: 10514
-
-dashboard_names: 
-  - monitoring
-  - logging
-
-dashboard_template_id: 12433
-influxdb: influxdb
-prometheus: prometheus
-
-backup_user: backup
-backup_server_ip: 192.168.42.132
-backup_server_public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEu6pFFWyuRrl4WGFPQGElYN9txwTGm2wSntcpVAaN90
-
 mysql_backup_user_password: !vault | 
           $ANSIBLE_VAULT;1.1;AES256
           62303866633664353734383337666636613931643033626461366266653633323331386135303134
@@ -86,4 +42,62 @@ mysql_replica_password: !vault |
           37346133373138323764663364656233356237333863633933343937613032633065383335346262
           3935316334386561650a663962666336373466333237366530396462633531643065306361623336
           3633
+
+# DNS, Nginx
+dns_allowed_networks:
+  - "192.168.42.0/23"
+  - "127.0.0.0/8"
+dns_forwarders:
+  - 8.8.8.8
+  - 1.1.1.1
+  - 9.9.9.9
+
+zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
+named_conf_file_path: "/etc/bind/named.conf.options"
+named_conf_local_file_path: "/etc/bind/named.conf.local"
+
+# Grafana
+grafana_user: Jesya-o
+grafana_pwd: !vault | 
+          $ANSIBLE_VAULT;1.1;AES256
+          32643164333233393962633161396165666434326238633639666562346535623866376637663462
+          6231306433613030616538653236613137623433326138300a646266363031643537313463636239
+          33363134643734656531393234636464636163343566303663353533343836393133373266346439
+          6534313965663836310a383163303662303563633261613039336131363961353062613430633734
+          3632
+dashboard_names: 
+  - monitoring
+  - logging
+dashboard_template_id: 12433
+grafana_url: "http://{{ vm_names[1] | lower }}:3000"
+grafana_port: 3001
+
+#Prometheus
+prometheus: prometheus
+
+# Agama
+agama_path: /opt/agama/
+agama_port: 8001
+agama_containers_per_host: 3
+
+#Telegraf, InfluxDB
+pinger_user: pinger
+pinger_db_name: influx_db
+pinger_db_url: http://{{ vm_names[1] | lower }}:8086
+
+influxdb: influxdb
+influxdb_udp: udp://127.0.0.1:8089
+
+telegraf_db_name: udp
+telegraf_udp_port: 10514
+
+# Backup
+backup_user: backup
+backup_server_ip: 192.168.42.132
+backup_server_public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEu6pFFWyuRrl4WGFPQGElYN9txwTGm2wSntcpVAaN90
+
 node_id: "{{ (ansible_port / 100) | int }}"
+
+# Keepalived
+virtual_router_id: 11
+ha_port: 88

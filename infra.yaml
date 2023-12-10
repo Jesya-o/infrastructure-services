@@ -6,6 +6,8 @@
     - init
   tags: 
     - i
+    - b
+    - r
 
 - name: DNS server
   hosts: dns_servers
@@ -24,35 +26,7 @@
     - resolver
   tags: 
     - r
-
-- name: Database server
-  hosts: db_servers
-  gather_facts: yes
-  become: yes
-  roles: 
-    - mysql
-  tags:
-    - db
-    - app
-
-- name: Web server
-  hosts: web_servers
-  become: yes
-  roles:
-    - agama
-    - uwsgi
-  tags:
-    - a
-    - app
-
-- name: Nginx
-  hosts: nginx_and_resolver_servers
-  gather_facts: no
-  become: yes
-  roles: 
-    - nginx
-  tags:
-    - n
+    - b
 
 - name: Prometheus
   hosts: prometheus
@@ -78,6 +52,45 @@
     - grafana
   tags:
     - g
+
+- name: Database server
+  hosts: db_servers
+  gather_facts: yes
+  become: yes
+  roles: 
+    - mysql
+  tags:
+    - db
+    - app
+
+- name: Web server
+  hosts: web_servers
+  become: yes
+  roles:
+    - agama
+  tags:
+    - a
+
+- name: Web server
+  hosts: web_servers
+  become: yes
+  roles:
+    - agama
+    - uwsgi
+    - keepalived
+    - haproxy
+  tags:
+    - w
+    - app
+
+- name: Nginx
+  hosts: nginx_and_resolver_servers
+  gather_facts: no
+  become: yes
+  roles: 
+    - nginx
+  tags:
+    - n
 
 - name: Logging
   hosts: influxdb
