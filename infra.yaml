@@ -30,7 +30,7 @@
 
 - name: Prometheus
   hosts: prometheus
-  gather_facts: no
+  gather_facts: yes
   become: yes
   roles:
     - prometheus
@@ -39,6 +39,7 @@
 
 - name: Docker
   hosts: docker
+  gather_facts: yes
   become: yes
   roles:
     - docker
@@ -47,6 +48,7 @@
 
 - name: Monitoring
   hosts: grafana
+  gather_facts: yes
   become: yes
   roles:
     - grafana
@@ -63,8 +65,9 @@
     - db
     - app
 
-- name: Web server
+- name: Agama
   hosts: web_servers
+  gather_facts: yes
   become: yes
   roles:
     - agama
@@ -73,9 +76,9 @@
 
 - name: Web server
   hosts: web_servers
+  gather_facts: yes
   become: yes
   roles:
-    - agama
     - uwsgi
     - keepalived
     - haproxy
@@ -85,7 +88,7 @@
 
 - name: Nginx
   hosts: nginx_and_resolver_servers
-  gather_facts: no
+  gather_facts: yes
   become: yes
   roles: 
     - nginx
@@ -94,7 +97,7 @@
 
 - name: Logging
   hosts: influxdb
-  gather_facts: no
+  gather_facts: yes
   become: yes
   roles:
     - influxdb
@@ -103,6 +106,7 @@
 
 - name: Pinger
   hosts: pinger
+  gather_facts: yes
   become: yes
   roles:
     - pinger

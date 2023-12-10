@@ -1,5 +1,5 @@
-10 16 * * 1     {{ backup_user }}    rm -rf /home/backup/influxdb/*; influxd backup -portable -database {{ telegraf_db_name }} /home/backup/influxdb && duplicity --no-encryption full /home/backup/influxdb/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb
-10 20 * * 2-7   {{ backup_user }}    rm -rf /home/backup/influxdb/*; influxd backup -portable -database {{ telegraf_db_name }} /home/backup/influxdb && duplicity --no-encryption incremental /home/backup/influxdb/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb
+19 14 * * 1     {{ backup_user }}    rm -rf /home/backup/influxdb/*; influxd backup -portable -database {{ telegraf_db_name }} /home/backup/influxdb && duplicity --no-encryption full /home/backup/influxdb/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb
+20 14 * * 2-7   {{ backup_user }}    rm -rf /home/backup/influxdb/*; influxd backup -portable -database {{ telegraf_db_name }} /home/backup/influxdb && duplicity --no-encryption incremental /home/backup/influxdb/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb
 
 # Restoration process
 # duplicity --no-encryption restore rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb /home/backup/restore/influxdb
@@ -10,4 +10,3 @@
 
 # First full backup
 # <current minutes + 5> <current hours in UTC> * * <current day of week> influxd backup -portable -database telegraf /home/backup/influxdb && duplicity --no-encryption full /home/backup/influxdb/ rsync://{{ github_username }}@backup.{{ startup_name }}//home/{{ github_username }}/influxdb
-/
