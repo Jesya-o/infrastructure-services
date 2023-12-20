@@ -11,7 +11,7 @@
     owner: agama
 
 - name: Install AGAMA dependencies
-  ansible.builtin.apt:
+  apt:
     name:
       - python3-flask-sqlalchemy
       - python3-pymysql

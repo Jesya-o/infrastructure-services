@@ -1,4 +1,13 @@
 zone "{{ startup_name }}" {
+
+{% if inventory_hostname in groups['dns_masters'] %}
     type master;
     file "{{ zone_file_path }}";
+    allow-transfer { key "transfer.key"; };
+    allow-update { key "nsupdate.key"; };
+{% else %}
+    type slave;
+    file "{{ zone_file_path }}";
+    masters { {{ groups['dns_masters'] | map('extract', hostvars, ['ansible_default_ipv4','address']) | join('; ') }}; };
+{% endif %}
 };

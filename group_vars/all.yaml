@@ -52,13 +52,62 @@ dns_forwarders:
   - 1.1.1.1
   - 9.9.9.9
 
-zone_file_path: "/var/lib/bind/db.{{ startup_name }}"
+zone_dir: "/var/cache/bind"
+zone_file_path: "{{ zone_dir }}/db.{{ startup_name }}"
 named_conf_file_path: "/etc/bind/named.conf.options"
 named_conf_local_file_path: "/etc/bind/named.conf.local"
 
+dns_transfer_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61623137346134313835343830383262386565653465636562353239306530373666366235306532
+          3966373264353763393233326562633865326662626536330a633266333832383065653837663534
+          61343164623031663134333465656565613361636537303435306361356531303233663235323733
+          3564353939383235640a346535613364366566626432633963666233363061306635383534336636
+          32653763623236323064656336326263326239623462363365373630656535386366343233626136
+          3863636134643965633062653565376661366566616534646331
+
+nsupdate_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          33656235613463633862656634356433373466623838643366386431333362333863316337633538
+          3634373138333362613635306562653430303964353238370a623662373464306665346466666638
+          65303930363439333630636266353265643164663163316637333030343739303230343365343463
+          3361383430323131330a636438373735386333613639643535393435393231313034613165326431
+          36613330633935343336636138353366333561383531646663333838353531623339396264366136
+          3334323065333236376337363632303437333465306466383831
+
+service_records:
+  - name: "grafana"
+    target: "{{ groups['grafana'][0] }}"
+  - name: "influxdb"
+    target: "{{ groups['influxdb'][0] }}"
+  - name: "lb-1"
+    target: "{{ groups['web_servers'][0] }}"
+  - name: "lb-2"
+    target: "{{ groups['web_servers'][1] }}"
+  - name: "mysql-1"
+    target: "{{ groups['db_servers'][0] }}"
+  - name: "mysql-2"
+    target: "{{ groups['db_servers'][1] }}"
+  - name: "ns-1"
+    target: "{{ groups['dns_servers'][0] }}"
+  - name: "ns-2"
+    target: "{{ groups['dns_servers'][1] }}"
+  - name: "prometheus"
+    target: "{{ groups['prometheus'][0] }}"
+  - name: "www-1"
+    target: "{{ groups['web_servers'][0] }}"
+  - name: "www-2"
+    target: "{{ groups['web_servers'][1] }}"
+
+ptr_records:
+  - ip: "67.156.40.193"  # Reverse of 193.40.156.67
+    name: "Jesya-o-1.{{ startup_name }}."
+  - ip: "67.156.40.193"  # Reverse of 193.40.156.67
+    name: "Jesya-o-2.{{ startup_name }}."
+
 # Grafana
 grafana_user: Jesya-o
-grafana_pwd: !vault | 
+grafana_pwd: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           32643164333233393962633161396165666434326238633639666562346535623866376637663462
           6231306433613030616538653236613137623433326138300a646266363031643537313463636239

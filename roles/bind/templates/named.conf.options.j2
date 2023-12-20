@@ -1,21 +1,49 @@
 acl corpnets { 
     localhost; 
-    {% for network in dns_allowed_networks %}
+{% for network in dns_allowed_networks %}
     {{ network }}; 
-    {% endfor %} 
+{% endfor %} 
 };
 
 options {
-    directory "/var/cache/bind";
+    directory "{{ zone_dir }}";
+
+{%  if ansible_hostname in groups['dns_masters'] %}
+    allow-transfer { key "transfer.key"; };
+    also-notify { 
+{% for hostname in groups['dns_slaves'] %}
+        {{ hostvars[hostname]['ansible_default_ipv4']['address'] }};
+{% endfor %} 
+    };
+{% endif %}
+
+    allow-query { corpnets; };
+    recursion yes;
+    allow-recursion { corpnets; };
 
     forwarders {
-        {% for forwarder in dns_forwarders %}
+{% for forwarder in dns_forwarders %}
         {{ forwarder }};
-        {% endfor %}
+{% endfor %}
     };
 
 };
 
 statistics-channels {
-    inet 127.0.0.1 port 8053;
+    inet 127.0.0.1 port 8053 allow { 127.0.0.1; };
 };
+
+key "transfer.key" {
+        algorithm hmac-sha256;
+        secret "{{ dns_transfer_key }}";
+};
+
+{% if ansible_hostname in groups['dns_slaves'] %}
+{% for host in groups['dns_masters'] %}
+server {{ hostvars[host]['ansible_default_ipv4']['address'] }} {
+    keys { 
+        transfer.key; 
+    };
+};
+{% endfor %}
+{% endif %}

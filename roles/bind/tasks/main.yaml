@@ -1,36 +1,102 @@
 ---
+# Installation
 - name: Install Bind9 package
-  ansible.builtin.apt: 
+  apt: 
     name: bind9
     state: present
 
 - name: Ensure Bind9 is enabled and running
-  ansible.builtin.systemd:
+  systemd:
     name: bind9
     enabled: true
     state: started
 
-- name: Ensure DNS forwarders are configured
-  ansible.builtin.template:
+- name: Install dnspython
+  apt:
+    name: python3-dnspython
+    state: present
+
+# Configuring DNS zone
+- name: Create directory for zone file
+  file:
+    path: "{{ zone_dir }}"
+    state: directory
+    owner: bind
+    group: bind
+  notify: Restart Bind9 service
+
+- name: DNS config, options
+  template:
     src: named.conf.options.j2
     dest: "{{ named_conf_file_path }}"
   notify: Restart Bind9 service
 
-- name: Ensure DNS forwarders are configured
-  ansible.builtin.template:
+- name: DNS config, local
+  template:
     src: named.conf.local.j2
     dest: "{{ named_conf_local_file_path }}"
   notify: Restart Bind9 service
 
-- name: Generate and copy master zone file
-  ansible.builtin.template:
-    src: "master_zone.j2"
-    dest: "{{ zone_file_path }}"
-    owner: root
-    group: bind
-    mode: "0644"
-  notify: Restart Bind9 service
+# Generate DNS keys
+# - name: Generate DNS key
+#   command: tsig-keygen -a hmac-sha256 transfer.key
+#   register: dns_key_output
+#   delegate_to: localhost
+#   run_once: true
 
+# Configure secondary DNS
+- name: Copy secondary zone configuration
+  template:
+    src: secondary_zone.j2
+    dest: "{{ zone_file_path }}"
+  when: inventory_hostname in groups['dns_slaves']
+
+# Update resolv.conf
+- name: Update /etc/resolv.conf with DNS servers
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+
+# Rewrite Bind role
+- name: Check if zone file exists
+  stat:
+    path: "{{ zone_file_path }}"
+  register: zone_file_exists
+
+- name: Generate and copy master zone file
+  template:
+    src: master_zone.j2
+    dest: "{{ zone_file_path }}"
+    owner: bind
+    group: bind
+  notify: Restart Bind9 service
+  when: inventory_hostname in groups['dns_masters'] and not zone_file_exists.stat.exists
+
+# # Create service records
+# - name: Create CNAME records for services
+#   community.general.nsupdate:
+#     server: "{{ ansible_default_ipv4.address }}"
+#     key_name: nsupdate.key
+#     key_secret: "{{ nsupdate_key }}"
+#     zone: "{{ startup_name }}"
+#     record: "{{ item.name }}"
+#     value: "{{ item.target }}"
+#     type: CNAME
+#   loop: "{{ service_records }}"
+
+# # Create PTR records
+# - name: Add PTR records for VMs
+#   community.general.nsupdate:
+#     server: "{{ ansible_default_ipv4.address }}"
+#     key_name: nsupdate.key
+#     key_secret: "{{ nsupdate_key }}"
+#     zone: "168.192.in-addr.arpa"
+#     record: "{{ item.ip }}.168.192.in-addr.arpa"
+#     value: "{{ item.name }}"
+#     type: PTR
+#   loop: "{{ ptr_records }}"
+
+# Set up prometheus exporter for bind
 - name: Install Bind9 exporter
   apt:
     name: prometheus-bind-exporter

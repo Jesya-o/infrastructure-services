@@ -1,0 +1,15 @@
+$TTL    604800
+@       IN      SOA     ns1.{{ startup_name }}. admin.{{ startup_name }}. (
+                    2023010101 ; Serial
+                    604800     ; Refresh
+                    86400      ; Retry
+                    2419200    ; Expire
+                    604800 )   ; Negative Cache TTL
+
+; NS Records
+@       IN      NS      ns1.{{ startup_name }}.
+@       IN      NS      ns2.{{ startup_name }}.
+
+; A Records for Name Servers
+ns1     IN      A       {{ hostvars[groups['dns_masters'][0]]['ansible_default_ipv4']['address'] }}
+ns2     IN      A       {{ hostvars[groups['dns_slaves'][0]]['ansible_default_ipv4']['address'] }}

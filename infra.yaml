@@ -7,7 +7,6 @@
   tags: 
     - i
     - b
-    - r
 
 - name: DNS server
   hosts: dns_servers
@@ -26,7 +25,6 @@
     - resolver
   tags: 
     - r
-    - b
 
 - name: Prometheus
   hosts: prometheus
