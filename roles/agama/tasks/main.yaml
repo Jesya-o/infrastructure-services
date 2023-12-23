@@ -16,6 +16,22 @@
     - agama.py
     - Dockerfile
 
+# - name: Add DNS servers to Docker
+#   copy:
+#     dest: '/etc/docker/daemon.json'
+#     content: |
+#       {
+#         "dns": ["8.8.8.8", "8.8.4.4"]
+#       }
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+# - name: Restart Docker service
+#   systemd:
+#     name: docker
+#     state: restarted
+
 - name: Build Docker image
   community.docker.docker_image:
     name: agama

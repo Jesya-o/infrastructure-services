@@ -1,21 +1,25 @@
-Jesya-o-1 ansible_host=193.40.156.67 ansible_port=5822 ansible_user=ubuntu
-Jesya-o-2 ansible_host=193.40.156.67 ansible_port=6722 ansible_user=ubuntu
+Jesya-o-1 ansible_host=193.40.156.67 ansible_port=31222 ansible_user=ubuntu
+Jesya-o-2 ansible_host=193.40.156.67 ansible_port=30722 ansible_user=ubuntu
 
-[dns_masters]
+[dns_primaries]
 Jesya-o-2
 
-[dns_slaves]
+[dns_secondaries]
 Jesya-o-1
 
 [dns_servers:children]
-dns_masters
-dns_slaves
+dns_primaries
+dns_secondaries
 
 [db_servers]
 Jesya-o-2
 Jesya-o-1
 
 [web_servers]
+Jesya-o-1
+Jesya-o-2
+
+[high_availability_servers]
 Jesya-o-1
 Jesya-o-2
 

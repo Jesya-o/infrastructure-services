@@ -47,6 +47,7 @@ mysql_replica_password: !vault |
 dns_allowed_networks:
   - "192.168.42.0/23"
   - "127.0.0.0/8"
+  - "172.17.0.0/16"
 dns_forwarders:
   - 8.8.8.8
   - 1.1.1.1
@@ -57,7 +58,7 @@ zone_file_path: "{{ zone_dir }}/db.{{ startup_name }}"
 named_conf_file_path: "/etc/bind/named.conf.options"
 named_conf_local_file_path: "/etc/bind/named.conf.local"
 
-dns_transfer_key: !vault |
+transfer_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           61623137346134313835343830383262386565653465636562353239306530373666366235306532
           3966373264353763393233326562633865326662626536330a633266333832383065653837663534
@@ -75,35 +76,23 @@ nsupdate_key: !vault |
           36613330633935343336636138353366333561383531646663333838353531623339396264366136
           3334323065333236376337363632303437333465306466383831
 
-service_records:
-  - name: "grafana"
-    target: "{{ groups['grafana'][0] }}"
-  - name: "influxdb"
-    target: "{{ groups['influxdb'][0] }}"
-  - name: "lb-1"
-    target: "{{ groups['web_servers'][0] }}"
-  - name: "lb-2"
-    target: "{{ groups['web_servers'][1] }}"
-  - name: "mysql-1"
-    target: "{{ groups['db_servers'][0] }}"
-  - name: "mysql-2"
-    target: "{{ groups['db_servers'][1] }}"
-  - name: "ns-1"
-    target: "{{ groups['dns_servers'][0] }}"
-  - name: "ns-2"
-    target: "{{ groups['dns_servers'][1] }}"
-  - name: "prometheus"
-    target: "{{ groups['prometheus'][0] }}"
-  - name: "www-1"
-    target: "{{ groups['web_servers'][0] }}"
-  - name: "www-2"
-    target: "{{ groups['web_servers'][1] }}"
+a_records:
+  backup: "{{ backup_server_ip }}"
 
-ptr_records:
-  - ip: "67.156.40.193"  # Reverse of 193.40.156.67
-    name: "Jesya-o-1.{{ startup_name }}."
-  - ip: "67.156.40.193"  # Reverse of 193.40.156.67
-    name: "Jesya-o-2.{{ startup_name }}."
+dns_cname_records:
+  grafana: "{{ groups['grafana'][0] }}"
+  influxdb: "{{ groups['influxdb'][0] }}"
+  lb1: "{{ groups['high_availability_servers'][0] }}"
+  lb2: "{{ groups['high_availability_servers'][1] }}"
+  mysql1: "{{ groups['db_servers'][0] }}"
+  mysql2: "{{ groups['db_servers'][1] }}"
+  ns1: "{{ groups['dns_servers'][0] }}"
+  ns2: "{{ groups['dns_servers'][1] }}"
+  prometheus: "{{ groups['prometheus'][0] }}"
+  www1: "{{ groups['web_servers'][0] }}"
+  www2: "{{ groups['web_servers'][1] }}"
+
+reverse_zone: 168.192.in-addr.arpa
 
 # Grafana
 grafana_user: Jesya-o
@@ -135,7 +124,7 @@ pinger_db_name: influx_db
 pinger_db_url: http://{{ vm_names[1] | lower }}:8086
 
 influxdb: influxdb
-influxdb_udp: udp://127.0.0.1:8089
+influxdb_udp: udp://localhost:8089
 
 telegraf_db_name: udp
 telegraf_udp_port: 10514

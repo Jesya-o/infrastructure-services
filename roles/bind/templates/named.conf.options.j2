@@ -1,5 +1,4 @@
 acl corpnets { 
-    localhost; 
 {% for network in dns_allowed_networks %}
     {{ network }}; 
 {% endfor %} 
@@ -7,20 +6,16 @@ acl corpnets {
 
 options {
     directory "{{ zone_dir }}";
-
-{%  if ansible_hostname in groups['dns_masters'] %}
-    allow-transfer { key "transfer.key"; };
+{%  if ansible_hostname in groups['dns_primaries'] %}
     also-notify { 
-{% for hostname in groups['dns_slaves'] %}
-        {{ hostvars[hostname]['ansible_default_ipv4']['address'] }};
-{% endfor %} 
+{% for hostname in groups['dns_secondaries'] %}
+        {{ hostvars[hostname]['ansible_default_ipv4']['address'] }}; 
+{% endfor %}
     };
 {% endif %}
-
+    dnssec-validation no;
     allow-query { corpnets; };
-    recursion yes;
-    allow-recursion { corpnets; };
-
+    listen-on-v6 { any; };
     forwarders {
 {% for forwarder in dns_forwarders %}
         {{ forwarder }};
@@ -35,15 +30,16 @@ statistics-channels {
 
 key "transfer.key" {
         algorithm hmac-sha256;
-        secret "{{ dns_transfer_key }}";
+        secret "{{ transfer_key }}";
 };
 
-{% if ansible_hostname in groups['dns_slaves'] %}
-{% for host in groups['dns_masters'] %}
-server {{ hostvars[host]['ansible_default_ipv4']['address'] }} {
-    keys { 
-        transfer.key; 
-    };
+key "nsupdate.key" {
+        algorithm hmac-sha256;
+        secret "{{ nsupdate_key }}";
 };
-{% endfor %}
+
+{% if ansible_hostname in groups['dns_secondaries'] %}
+server {{ hostvars[groups['dns_primaries'][0]]['ansible_default_ipv4']['address'] }} {
+    keys { transfer.key ; };
+};
 {% endif %}

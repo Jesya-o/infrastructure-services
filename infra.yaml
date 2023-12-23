@@ -5,8 +5,8 @@
   roles:
     - init
   tags: 
-    - i
-    - b
+    - init
+    # - b
 
 - name: DNS server
   hosts: dns_servers
@@ -63,22 +63,24 @@
     - db
     - app
 
-- name: Agama
+- name: Web_servers
   hosts: web_servers
   gather_facts: yes
   become: yes
   roles:
     - agama
+    - uwsgi
   tags:
+    - w
     - a
+    - u
     - app
 
-- name: Web server
-  hosts: web_servers
+- name: HA
+  hosts: high_availability_servers
   gather_facts: yes
   become: yes
   roles:
-    - uwsgi
     - keepalived
     - haproxy
   tags:
@@ -101,6 +103,7 @@
   roles:
     - influxdb
   tags:
+    - i
     - l
 
 - name: Pinger

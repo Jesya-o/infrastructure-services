@@ -1,0 +1,22 @@
+$TTL    604800
+{{ reverse_zone }}.       IN      SOA     {{ vm_names[1] }}.{{ startup_name }}. ksenija.{{ startup_name }}. (
+                    2          ; Serial
+                    604800     ; Refresh
+                    86400      ; Retry
+                    2419200    ; Expire
+                    604800 )   ; Negative Cache TTL
+
+; NS Records
+{% for host in groups['dns_servers'] %}
+{{ reverse_zone }}.     IN      NS      {{ host }}.{{ startup_name }}.
+{% endfor %}
+
+; A Records for vms
+{% for host in groups['all'] %}
+{{ host }}       IN      A       {{ hostvars[host]['ansible_default_ipv4']['address'] }}
+{% endfor %}
+
+; PTR Records
+{% for host in groups['all'] %}
+{{ (hostvars[host]['ansible_default_ipv4']['address']|split('.'))[3] }}.{{ (hostvars[host]['ansible_default_ipv4']['address']|split('.'))[2] }}      IN      PTR       {{ host }}.{{ startup_name }}.
+{% endfor %}

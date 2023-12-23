@@ -2,8 +2,9 @@
 # Installation
 - name: Install Bind9 package
   apt: 
-    name: bind9
-    state: present
+    name:
+      - bind9
+      - python3-dnspython
 
 - name: Ensure Bind9 is enabled and running
   systemd:
@@ -11,12 +12,26 @@
     enabled: true
     state: started
 
-- name: Install dnspython
-  apt:
-    name: python3-dnspython
-    state: present
-
 # Configuring DNS zone
+- name: DNS config, options
+  template:
+    src: named.conf.options.j2
+    dest: /etc/bind/named.conf.options
+  notify: Restart Bind9 service
+
+- name: DNS config, local
+  template:
+    src: named.conf.local.j2
+    dest: /etc/bind/named.conf.local
+  notify: Restart Bind9 service
+
+# Update resolv.conf
+- name: Update /etc/resolv.conf with DNS servers
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+
+# Add directory for zone file
 - name: Create directory for zone file
   file:
     path: "{{ zone_dir }}"
@@ -25,76 +40,72 @@
     group: bind
   notify: Restart Bind9 service
 
-- name: DNS config, options
+- name: Place zone file
   template:
-    src: named.conf.options.j2
-    dest: "{{ named_conf_file_path }}"
-  notify: Restart Bind9 service
-
-- name: DNS config, local
-  template:
-    src: named.conf.local.j2
-    dest: "{{ named_conf_local_file_path }}"
-  notify: Restart Bind9 service
-
-# Generate DNS keys
-# - name: Generate DNS key
-#   command: tsig-keygen -a hmac-sha256 transfer.key
-#   register: dns_key_output
-#   delegate_to: localhost
-#   run_once: true
-
-# Configure secondary DNS
-- name: Copy secondary zone configuration
-  template:
-    src: secondary_zone.j2
-    dest: "{{ zone_file_path }}"
-  when: inventory_hostname in groups['dns_slaves']
-
-# Update resolv.conf
-- name: Update /etc/resolv.conf with DNS servers
-  template:
-    src: resolv.conf.j2
-    dest: /etc/resolv.conf
-
-# Rewrite Bind role
-- name: Check if zone file exists
-  stat:
-    path: "{{ zone_file_path }}"
-  register: zone_file_exists
-
-- name: Generate and copy master zone file
-  template:
+    dest: '{{ zone_file_path }}'
     src: master_zone.j2
-    dest: "{{ zone_file_path }}"
+    force: no
     owner: bind
     group: bind
   notify: Restart Bind9 service
-  when: inventory_hostname in groups['dns_masters'] and not zone_file_exists.stat.exists
+  when: inventory_hostname in groups['dns_primaries']
 
-# # Create service records
-# - name: Create CNAME records for services
-#   community.general.nsupdate:
-#     server: "{{ ansible_default_ipv4.address }}"
-#     key_name: nsupdate.key
-#     key_secret: "{{ nsupdate_key }}"
-#     zone: "{{ startup_name }}"
-#     record: "{{ item.name }}"
-#     value: "{{ item.target }}"
-#     type: CNAME
-#   loop: "{{ service_records }}"
+- name: Place reverse zone file
+  template:
+    dest: '{{ zone_dir }}/db.rev'
+    src: reverse_zone.j2
+    # force: no
+    owner: bind
+    group: bind
+  notify: Restart Bind9 service
+  when: inventory_hostname in groups['dns_primaries']
 
-# # Create PTR records
-# - name: Add PTR records for VMs
-#   community.general.nsupdate:
-#     server: "{{ ansible_default_ipv4.address }}"
-#     key_name: nsupdate.key
-#     key_secret: "{{ nsupdate_key }}"
-#     zone: "168.192.in-addr.arpa"
-#     record: "{{ item.ip }}.168.192.in-addr.arpa"
-#     value: "{{ item.name }}"
-#     type: PTR
-#   loop: "{{ ptr_records }}"
+- name: Flush handlers
+  meta: flush_handlers
+
+# # Rewrite Bind role
+# - name: Check if zone file exists
+#   stat:
+#     path: "{{ zone_file_path }}"
+#   register: zone_file_exists
+
+# - name: Generate and copy master zone file
+#   template:
+#     src: master_zone.j2
+#     dest: "{{ zone_file_path }}"
+#     owner: bind
+#     group: bind
+#   notify: Restart Bind9 service
+#   when: inventory_hostname in groups['dns_primaries'] and not zone_file_exists.stat.exists
+
+# Add records
+- name: Add A records
+  nsupdate:
+     key_name: "nsupdate.key"
+     key_secret: "{{ nsupdate_key }}"
+     key_algorithm: "hmac-sha256"
+     server: "localhost"
+     zone: "{{ startup_name }}."
+     record: "{{ item.key }}.{{ startup_name }}."
+     value: "{{ item.value }}"
+     type: "A"
+  loop: "{{ a_records | dict2items }}"
+  when: inventory_hostname in groups['dns_primaries']
+  # no_log: true
+
+- name: Add CNAME records
+  nsupdate:
+     key_name: "nsupdate.key"
+     key_secret: "{{ nsupdate_key }}"
+     key_algorithm: "hmac-sha256"
+     server: "localhost"
+     zone: "{{ startup_name }}."
+     record: "{{ item.key }}.{{ startup_name }}."
+     value: "{{ item.value }}.{{ startup_name }}."
+     type: "CNAME"
+  loop: "{{ dns_cname_records | dict2items }}"
+  when: inventory_hostname in groups['dns_primaries']
+  # no_log: true
 
 # Set up prometheus exporter for bind
 - name: Install Bind9 exporter

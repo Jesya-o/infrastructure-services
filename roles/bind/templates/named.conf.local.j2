@@ -1,13 +1,23 @@
 zone "{{ startup_name }}" {
-
-{% if inventory_hostname in groups['dns_masters'] %}
-    type master;
-    file "{{ zone_file_path }}";
+{% if inventory_hostname in groups['dns_primaries'] %}
+    type primary;
     allow-transfer { key "transfer.key"; };
     allow-update { key "nsupdate.key"; };
 {% else %}
-    type slave;
-    file "{{ zone_file_path }}";
-    masters { {{ groups['dns_masters'] | map('extract', hostvars, ['ansible_default_ipv4','address']) | join('; ') }}; };
+    type secondary;
+    masters { {{ hostvars[groups['dns_primaries'][0]]['ansible_default_ipv4']['address'] }}; };
 {% endif %}
+    file "{{ zone_file_path }}";
+};
+
+zone "{{ reverse_zone }}" {
+{% if inventory_hostname in groups['dns_primaries'] %}
+    type primary;
+    allow-transfer { key "transfer.key"; };
+    allow-update { key "nsupdate.key"; };
+{% else %}
+    type secondary;
+    masters { {{ hostvars[groups['dns_primaries'][0]]['ansible_default_ipv4']['address'] }}; };
+{% endif %}
+    file "{{ zone_dir }}/db.rev";
 };

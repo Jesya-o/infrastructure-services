@@ -282,7 +282,7 @@
           "type": "prometheus",
           "uid": "PBFA97CFB590B2093"
         },
-        "description": "Master -> Read/Write\nReplica -> Read-only",
+        "description": "Primary -> Read/Write\nReplica -> Read-only",
         "fieldConfig": {
           "defaults": {
             "color": {
