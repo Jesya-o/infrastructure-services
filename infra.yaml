@@ -6,7 +6,7 @@
     - init
   tags: 
     - init
-    # - b
+    - b
 
 - name: DNS server
   hosts: dns_servers

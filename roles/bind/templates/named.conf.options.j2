@@ -6,7 +6,7 @@ acl corpnets {
 
 options {
     directory "{{ zone_dir }}";
-{%  if ansible_hostname in groups['dns_primaries'] %}
+{%  if inventory_hostname in groups['dns_primaries'] %}
     also-notify { 
 {% for hostname in groups['dns_secondaries'] %}
         {{ hostvars[hostname]['ansible_default_ipv4']['address'] }}; 
@@ -38,7 +38,7 @@ key "nsupdate.key" {
         secret "{{ nsupdate_key }}";
 };
 
-{% if ansible_hostname in groups['dns_secondaries'] %}
+{% if inventory_hostname in groups['dns_secondaries'] %}
 server {{ hostvars[groups['dns_primaries'][0]]['ansible_default_ipv4']['address'] }} {
     keys { transfer.key ; };
 };
