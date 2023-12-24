@@ -17,6 +17,7 @@ tmp_file="/home/jesya-o/Projects/infra/hosts.tmp"
 # Track if the first two occurrences have been updated
 updated_1=0
 updated_2=0
+updated_3=0
 
 # Update the Ansible inventory file
 while IFS= read -r line; do
@@ -26,6 +27,9 @@ while IFS= read -r line; do
   elif [[ $line == *Jesya-o-2* && $updated_2 -eq 0 ]]; then
     echo "Jesya-o-2 ansible_host=193.40.156.67 ansible_port=${ports[1]} ansible_user=ubuntu" >> "$tmp_file"
     updated_2=1
+  elif [[ $line == *Jesya-o-3* && $updated_3 -eq 0 ]]; then
+    echo "Jesya-o-3 ansible_host=193.40.156.67 ansible_port=${ports[2]} ansible_user=ubuntu" >> "$tmp_file"
+    updated_3=1
   else
     echo "$line" >> "$tmp_file"
   fi
