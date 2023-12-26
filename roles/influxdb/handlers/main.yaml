@@ -3,11 +3,6 @@
   service:
     name: influxdb
     state: restarted
-
-- name: Restart Telegraf
-  systemd:
-    name: telegraf
-    state: restarted
   
 - name: Reload systemd
   systemd:

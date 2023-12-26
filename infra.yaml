@@ -18,13 +18,22 @@
     - b
 
 - name: Resolver service
-  hosts: nginx_and_resolver_servers
+  hosts: resolver_servers
   gather_facts: yes
   become: yes
   roles:
     - resolver
   tags: 
     - r
+
+- name: Rsyslog
+  hosts: telegraf
+  gather_facts: yes
+  become: yes
+  roles:
+    - telegraf
+  tags: 
+    - t
 
 - name: Prometheus
   hosts: prometheus
@@ -88,7 +97,7 @@
     - app
 
 - name: Nginx
-  hosts: nginx_and_resolver_servers
+  hosts: nginx_servers
   gather_facts: yes
   become: yes
   roles: 

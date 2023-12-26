@@ -15,7 +15,7 @@ vrrp_instance agama {
     advert_int 1
 
     virtual_ipaddress {
-        192.168.{{ hostvars[groups['remote_hosts'][0]]['ansible_default_ipv4']['address'].split('.')[-2] | int + 58 }}.{{ hostvars[groups['web_servers'][0]]['ansible_default_ipv4']['address'].split('.')[-1] }}/24
+        192.168.{{ hostvars[groups['high_availability_servers'][0]]['ansible_default_ipv4']['address'].split('.')[-2] | int + 58 }}.{{ hostvars[groups['web_servers'][0]]['ansible_default_ipv4']['address'].split('.')[-1] }}/24
     }
 
     unicast_peer {

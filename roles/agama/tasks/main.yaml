@@ -16,22 +16,6 @@
     - agama.py
     - Dockerfile
 
-# - name: Add DNS servers to Docker
-#   copy:
-#     dest: '/etc/docker/daemon.json'
-#     content: |
-#       {
-#         "dns": ["8.8.8.8", "8.8.4.4"]
-#       }
-#     owner: root
-#     group: root
-#     mode: '0644'
-
-# - name: Restart Docker service
-#   systemd:
-#     name: docker
-#     state: restarted
-
 - name: Build Docker image
   community.docker.docker_image:
     name: agama
@@ -50,10 +34,6 @@
   loop: "{{ range(1, agama_containers_per_host + 1) | list }}"
   loop_control:
     label: "{{ 'Agama Container ' ~ item }}"
-
-# - name: Run docker info without templating
-#   command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"
-#   register: current_containers_raw
 
 - name: Run docker info without templating
   command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"

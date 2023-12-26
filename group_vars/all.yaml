@@ -103,11 +103,6 @@ grafana_pwd: !vault |
           33363134643734656531393234636464636163343566303663353533343836393133373266346439
           6534313965663836310a383163303662303563633261613039336131363961353062613430633734
           3632
-dashboard_names: 
-  - monitoring
-  - logging
-dashboard_template_id: 12433
-grafana_url: "http://{{ vm_names[1] | lower }}:3000"
 grafana_port: 3001
 
 #Prometheus
@@ -121,7 +116,7 @@ agama_containers_per_host: 2
 #Telegraf, InfluxDB
 pinger_user: pinger
 pinger_db_name: influx_db
-pinger_db_url: http://{{ vm_names[1] | lower }}:8086
+pinger_db_url: http://influxdb.{{ startup_name }}:8086
 
 influxdb: influxdb
 influxdb_udp: udp://localhost:8089

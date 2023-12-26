@@ -25,12 +25,6 @@
     dest: /etc/bind/named.conf.local
   notify: Restart Bind9 service
 
-# Update resolv.conf
-- name: Update /etc/resolv.conf with DNS servers
-  template:
-    src: resolv.conf.j2
-    dest: /etc/resolv.conf
-
 # Add directory for zone file
 - name: Create directory for zone file
   file:

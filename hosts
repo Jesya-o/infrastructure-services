@@ -1,20 +1,21 @@
-Jesya-o-1 ansible_host=193.40.156.67 ansible_port=44622 ansible_user=ubuntu
-Jesya-o-2 ansible_host=193.40.156.67 ansible_port=29622 ansible_user=ubuntu
-Jesya-o-3 ansible_host=193.40.156.67 ansible_port=44222 ansible_user=ubuntu
+Jesya-o-1 ansible_host=193.40.156.67 ansible_port=16422 ansible_user=ubuntu
+Jesya-o-2 ansible_host=193.40.156.67 ansible_port=8422 ansible_user=ubuntu
+Jesya-o-3 ansible_host=193.40.156.67 ansible_port=4522 ansible_user=ubuntu
 
 [dns_primaries]
-Jesya-o-2
+Jesya-o-3
 
 [dns_secondaries]
 Jesya-o-1
+Jesya-o-2
 
 [dns_servers:children]
 dns_primaries
 dns_secondaries
 
 [db_servers]
-Jesya-o-2
 Jesya-o-1
+Jesya-o-2
 
 [web_servers]
 Jesya-o-1
@@ -24,29 +25,35 @@ Jesya-o-2
 Jesya-o-1
 Jesya-o-2
 
-[nginx_and_resolver_servers]
+[nginx_servers]
 Jesya-o-1
 Jesya-o-2
+Jesya-o-3
+
+[resolver_servers]
+Jesya-o-1
+Jesya-o-2
+Jesya-o-3
+
+[telegraf]
+Jesya-o-3
 
 [monitoring]
 Jesya-o-2
 
 [grafana]
-Jesya-o-2
+Jesya-o-3
 
 [prometheus]
-Jesya-o-2
+Jesya-o-3
 
 [influxdb]
-Jesya-o-2
+Jesya-o-3
 
 [pinger]
-Jesya-o-2
+Jesya-o-3
 
 [docker]
 Jesya-o-1
 Jesya-o-2
-
-[remote_hosts]
-Jesya-o-1
-Jesya-o-2
+Jesya-o-3
