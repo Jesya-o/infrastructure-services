@@ -33,8 +33,9 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "max": 100,
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
                 "color": "green",
@@ -53,29 +54,14 @@
                 "value": 90
               }
             ]
-          }
+          },
+          "unit": "%"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "localhost:9100"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
-        "w": 7,
+        "w": 11,
         "x": 0,
         "y": 0
       },
@@ -103,139 +89,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes",
-          "hide": true,
-          "instant": false,
-          "legendFormat": "Total Memory",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "node_memory_MemTotal_bytes{instance!=\"localhost:9100\"} - node_memory_MemAvailable_bytes",
-          "fullMetaSearch": false,
+          "expr": "node_memory_Active_bytes/node_memory_MemTotal_bytes*100",
           "hide": false,
-          "includeNullMetadata": true,
           "instant": false,
           "legendFormat": "{{instance}}",
           "range": true,
-          "refId": "B",
-          "useBackend": false
-        }
-      ],
-      "title": "Memory used (MB)",
-      "transformations": [],
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "semi-dark-yellow",
-                "value": 60
-              },
-              {
-                "color": "dark-orange",
-                "value": 80
-              },
-              {
-                "color": "dark-red",
-                "value": 90
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "localhost:9100"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 7,
-        "x": 7,
-        "y": 0
-      },
-      "id": 1,
-      "options": {
-        "minVizHeight": 200,
-        "minVizWidth": 200,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "pluginVersion": "10.2.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes",
-          "hide": true,
-          "instant": false,
-          "legendFormat": "Total Memory",
-          "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "node_memory_MemTotal_bytes{instance!=\"localhost:9100\"} - node_memory_MemAvailable_bytes",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "{{instance}}",
-          "range": true,
-          "refId": "B",
-          "useBackend": false
         }
       ],
       "title": "Memory used (MB)",
@@ -303,8 +162,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 10,
-        "x": 14,
+        "w": 13,
+        "x": 11,
         "y": 0
       },
       "id": 24,
@@ -1747,7 +1606,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 12,
         "y": 32
@@ -1849,8 +1708,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 14,
+        "w": 19,
         "x": 0,
         "y": 39
       },
@@ -1929,7 +1788,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
