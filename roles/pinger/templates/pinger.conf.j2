@@ -1,4 +1,3 @@
-# /etc/pinger/pinger.conf
 database_url={{ pinger_db_url }}
 database_name={{ pinger_db_name }}
-targets={{ vm_names[0] | lower }}, {{ vm_names[1] | lower }}
+targets={% for vm_name in vm_names %}{{ vm_name | lower }}{% if not loop.last %}, {% endif %}{% endfor %}
