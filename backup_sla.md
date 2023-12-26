@@ -31,7 +31,7 @@ The RPO for the database servers is set at 1 hour. This means that, in the event
 
 ### Database Servers
 - For MySQL databases, full backups are made weekly, on Monday at 16:10 UTC.
-- Incremental backups are taken daily at 20:10 UTC from Tuesday through Sunday.
+- Incremental backups are taken daily at 16:10 UTC from Tuesday through Sunday.
 
 ### InfluxDB
 - For MySQL databases, full backups are made weekly, on Monday at 16:10 UTC.
