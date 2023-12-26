@@ -57,11 +57,27 @@
           },
           "unit": "%"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "localhost:9100"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
-        "w": 11,
+        "w": 9,
         "x": 0,
         "y": 0
       },
@@ -92,12 +108,12 @@
           "expr": "node_memory_Active_bytes/node_memory_MemTotal_bytes*100",
           "hide": false,
           "instant": false,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "Total Memory",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Memory used (MB)",
+      "title": "Memory usage",
       "transformations": [],
       "type": "gauge"
     },
@@ -162,8 +178,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 13,
-        "x": 11,
+        "w": 10,
+        "x": 9,
         "y": 0
       },
       "id": 24,
@@ -1708,8 +1724,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 14,
-        "w": 19,
+        "h": 15,
+        "w": 20,
         "x": 0,
         "y": 39
       },
