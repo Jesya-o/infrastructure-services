@@ -34,29 +34,33 @@
   loop: "{{ range(1, agama_containers_per_host + 1) | list }}"
   loop_control:
     label: "{{ 'Agama Container ' ~ item }}"
+  tags: containers
 
 - name: Run docker info without templating
   command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"
   register: current_containers_raw
   changed_when: "current_containers_raw.stdout == previous_containers_raw.stdout | default('')"
+  tags: containers
 
 - name: Save the current containers info
   set_fact:
     previous_containers_raw: "{{ current_containers_raw.stdout }}"
+  tags: containers
 
 - name: Parse the number of running containers
   set_fact:
     current_containers: "{{ current_containers_raw.stdout | int }}"
+  tags: containers
 
-- name: Check if Grafana container exists
-  community.general.docker_container_info:
-    name: grafana
-  register: grafana_container
+# - name: Check if Grafana container exists
+#   community.general.docker_container_info:
+#     name: grafana
+#   register: grafana_container
 
-- name: Subtract 1 if Grafana container exists
-  when: grafana_container.exists | default(false)
-  set_fact:
-    current_containers: "{{ current_containers | int - 1 }}"
+# - name: Subtract 1 if Grafana container exists
+#   when: grafana_container.exists | default(false)
+#   set_fact:
+#     current_containers: "{{ current_containers | int - 1 }}"
 
 # - name: Display type of current_containers
 #   debug:
@@ -73,7 +77,11 @@
 
     # - name: all containers
     #   debug:
-    #     var: all_containers
+    #     var: "{{ current_containers|int }}"
+
+    # - name: all containers
+    #   debug:
+    #     var: "{{ agama_containers_per_host|int , current_containers|int + 1 }}"
 
     - name: Remove extra containers
       command: docker rm -f "agama{{ item.1 + 1 }}"
@@ -81,5 +89,5 @@
       when: all_containers.rc == 0
       loop_control:
         label: "{{ item.1 + 1 }}"
-      loop: "{{ range(current_containers|int - agama_containers_per_host|int + 1 , current_containers|int) | list }}"
-
+      loop: "{{ range(agama_containers_per_host|int , current_containers|int + 1) | list }}"
+  tags: containers

@@ -8,7 +8,10 @@
   template:
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
-  notify: Restart haproxy
+  notify: 
+    - Restart haproxy
+    - Restart haproxy exporter
+  tags: containers
 
 - name: Install haproxy exporter
   apt:
