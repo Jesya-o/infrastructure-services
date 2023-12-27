@@ -38,9 +38,7 @@ The RPO for the database servers is set at 1 hour. This means that, in the event
 - Incremental backups are taken daily at 16:10 UTC from Tuesday through Sunday.
 
 ## Versioning and retention
-- Backup versions are retained for a 7-day period.
-- Daily backups are taken, and each daily backup is retained for the entire 7-day period.
-- Backup versioning is implemented, allowing for point-in-time recovery within the 7-day window.
+Infrastructure playbook is versioned with git. Any version can be viewed at any time unless manually deleted.
 
 ## Usability checks
 Usability checks ensure that backups are reliable and can be effectively restored.
