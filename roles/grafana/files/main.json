@@ -172,7 +172,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "%"
         },
         "overrides": []
       },
@@ -205,7 +206,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "1 - rate(node_cpu_seconds_total{mode=\"idle\"}[1m])",
+          "expr": "100 - rate(node_cpu_seconds_total{mode=\"idle\"}[1m]) *100",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1480,7 +1481,7 @@
                   "text": "Backup"
                 },
                 "2": {
-                  "color": "blue",
+                  "color": "dark-yellow",
                   "index": 0,
                   "text": "Primary"
                 }

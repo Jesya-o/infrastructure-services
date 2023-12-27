@@ -59,9 +59,9 @@ If it will ask questions, then enter yes continuously. If it freezes, then also 
 ```
 ansible-playbook infra.yaml
 ```
-#### ssh to the second host
+#### ssh to the first host (MySQL master host)
 ```
-ssh -p<second line, port from the hosts file> ubuntu@193.40.156.67
+ssh -p<first line, port from the hosts file> ubuntu@193.40.156.67
 ```
 #### Become a **root** user:
 ```
@@ -75,5 +75,5 @@ sudo -u backup duplicity --no-encryption restore rsync://Jesya-o@backup.epy.io//
 
 ## InfluxDB restoration
 ```
-sudo -u backup duplicity --no-encryption restore rsync://Jesya-o@backup.epy.io//home/Jesya-o/influxdb /home/backup/restore/influxdb && service telegraf stop && influx -execute 'DROP DATABASE telegraf' && influxd restore -portable -database telegraf /home/ахbackup/restore/influxdb && service telegraf start
+sudo -u backup duplicity --no-encryption restore rsync://Jesya-o@backup.epy.io//home/Jesya-o/influxdb /home/backup/restore/influxdb && service telegraf stop && influx -execute 'DROP DATABASE telegraf' && influxd restore -portable -database telegraf /home/backup/restore/influxdb && service telegraf start
 ```

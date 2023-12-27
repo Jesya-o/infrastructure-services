@@ -95,6 +95,8 @@
   tags:
     - w
     - app
+    - h
+    - k
 
 - name: Nginx
   hosts: nginx_servers
