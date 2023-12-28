@@ -1,1 +1,1 @@
-ARGS="--web.external-url=http://{{ hostvars[inventory_hostname].public_url }}:{{ hostvars[inventory_hostname]['ansible_port'] | regex_replace('22$', '80') }}/prometheus"
+ARGS="--web.external-url=http://{{ hostvars[inventory_hostname].ansible_host }}:{{ hostvars[inventory_hostname]['ansible_port'] | regex_replace('22$', '80') }}/prometheus"

@@ -5,7 +5,6 @@ vm_names:
   - "{{ github_username }}-1"
   - "{{ github_username }}-2"
   - "{{ github_username }}-3"
-public_url: "193.40.156.67"
 
 # MySQL
 mysql_host: "{{ groups['db_servers'][0] }}"
