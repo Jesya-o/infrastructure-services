@@ -4,12 +4,12 @@
 - name: Download InfluxDB package
   get_url:
     url: "https://dl.influxdata.com/influxdb/releases/influxdb_1.8.10_amd64.deb"
-    dest: /tmp/influxdb_1.8.10_amd64.deb
+    dest: /opt/downloads/influxdb_1.8.10_amd64.deb
     checksum: "sha256:b2ace09231575df7309a41cea6f9dc7ad716fe4389dc06ac04470a14bd411456"
 
 - name: Install InfluxDB package
   apt:
-    deb: "/tmp/influxdb_1.8.10_amd64.deb"
+    deb: /opt/downloads/influxdb_1.8.10_amd64.deb
   when: ansible_os_family == 'Debian'
   
 - name: Configure InfluxDB

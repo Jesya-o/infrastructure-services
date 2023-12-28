@@ -74,3 +74,9 @@
   apt:
     name: duplicity
     state: present
+
+# Directory for downloading packages
+- name: Create a directory for downloads
+  file:
+    path: /opt/downloads
+    state: directory
