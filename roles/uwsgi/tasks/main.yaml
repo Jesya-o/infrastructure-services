@@ -14,6 +14,7 @@
     owner: agama
     mode: 0600
   notify: Restart uWSGI service
+  no_log: true
 
 - name: uWSGI service
   service:

@@ -35,6 +35,7 @@
   loop_control:
     label: "{{ 'Agama Container ' ~ item }}"
   tags: containers
+  no_log: true
 
 - name: Run docker info without templating
   command: "docker info --format '{{ '{{' }}.ContainersRunning{{ '}}' }}'"

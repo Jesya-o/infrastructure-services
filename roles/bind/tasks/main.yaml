@@ -18,6 +18,7 @@
     src: named.conf.options.j2
     dest: /etc/bind/named.conf.options
   notify: Restart Bind9 service
+  no_log: true
 
 - name: DNS config, local
   template:
@@ -85,7 +86,7 @@
      type: "A"
   loop: "{{ a_records | dict2items }}"
   when: inventory_hostname in groups['dns_primaries']
-  # no_log: true
+  no_log: true
 
 - name: Add CNAME records
   nsupdate:
@@ -99,7 +100,7 @@
      type: "CNAME"
   loop: "{{ dns_cname_records | dict2items }}"
   when: inventory_hostname in groups['dns_primaries']
-  # no_log: true
+  no_log: true
 
 # Set up prometheus exporter for bind
 - name: Install Bind9 exporter

@@ -12,7 +12,7 @@
   template:
     src: grafana.ini.j2
     dest: /opt/grafana/grafana.ini
-  no_log: yes
+  no_log: true
 
 - name: Copy dashboards
   copy:

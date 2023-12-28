@@ -35,8 +35,7 @@
     priv: "{{ mysql_database }}.*:ALL"
     host: "%"
     login_unix_socket: /var/run/mysqld/mysqld.sock
-  tags:
-    - create_mysql_user
+  no_log: true
 
 # MySQL replica
 - name: MySQL replication user
@@ -72,6 +71,7 @@
     priv: '*.*:PROCESS,REPLICATION CLIENT,SELECT'
     host: '%'
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  no_log: true
 
 - name: Create .my.cnf file
   template:
@@ -83,6 +83,7 @@
   notify: 
     - Daemon reload
     - Restart MySQL exporter
+  no_log: true
 
 - name: Create prometheus-mysqld-exporter file
   ansible.builtin.template:
@@ -117,6 +118,7 @@
     priv: "{{ mysql_database }}.*:LOCK TABLES,SELECT"
     state: present
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  no_log: true
 
 - name: Create .my.cnf file for user 'backup'
   template:
@@ -125,6 +127,7 @@
     owner: '{{ backup_user }}'
     group: '{{ backup_user }}'
     mode: '700'
+  no_log: true
 
 - name: Add a MySQL cron tab file
   ansible.builtin.template:
