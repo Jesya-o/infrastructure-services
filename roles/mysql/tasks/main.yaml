@@ -1,15 +1,24 @@
 ---
 
 # MySQL
-- name: Install MySQL server and pymysql
-  ansible.builtin.apt:
+- name: Install MySQL server, pymysql and pip
+  apt:
     name: 
       - mysql-server
       - python3-pymysql
+      - python3-pip
     state: present
 
+- name: Install Flask for Python3
+  pip:
+    name: 
+      - flask
+      - flask_sqlalchemy
+    executable: pip3
+  become: true
+
 - name: Ensure MySQL service is enabled and running
-  ansible.builtin.service: 
+  service: 
     name: mysql
     state: started
     enabled: true
@@ -86,13 +95,13 @@
   no_log: true
 
 - name: Create prometheus-mysqld-exporter file
-  ansible.builtin.template:
+  template:
     src: prometheus-mysqld-exporter.j2
     dest: /etc/default/prometheus-mysqld-exporter
   notify: Restart MySQL exporter
 
 - name: flush
-  ansible.builtin.meta: flush_handlers
+  meta: flush_handlers
 
 - name: Ensure MySQL exporter service is started and enabled
   systemd:
@@ -103,7 +112,7 @@
 
 # Backup
 - name: Create mysql directory, created and owned by backup
-  ansible.builtin.file:
+  file:
     path: /home/backup/mysql
     state: directory
     owner: '{{ backup_user }}'
@@ -130,6 +139,6 @@
   no_log: true
 
 - name: Add a MySQL cron tab file
-  ansible.builtin.template:
+  template:
     src: mysql-backup
     dest: /etc/cron.d/mysql-backup

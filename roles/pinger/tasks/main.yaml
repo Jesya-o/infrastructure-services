@@ -41,7 +41,7 @@
     - Reload systemd
 
 - name: flush
-  ansible.builtin.meta: flush_handlers
+  meta: flush_handlers
 
 - name: Start and enable the pinger service
   systemd:

@@ -18,7 +18,7 @@
     - Remove existing Grafana container
 
 - name: flush
-  ansible.builtin.meta: flush_handlers
+  meta: flush_handlers
 
 - name: Copy dashboards
   copy:

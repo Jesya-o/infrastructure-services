@@ -5,7 +5,7 @@
     state: restarted
 
 - name: Daemon reload
-  ansible.builtin.systemd:
+  systemd:
     daemon_reload: yes
 
 - name: Restart MySQL exporter

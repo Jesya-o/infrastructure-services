@@ -3,7 +3,7 @@
   command: systemctl daemon-reload
 
 - name: Restart pinger
-  ansible.builtin.service:
+  service:
     name: pinger
     state: restarted
     enabled: yes

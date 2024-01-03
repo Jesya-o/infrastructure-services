@@ -1,6 +1,6 @@
 ---
 - name: Install Prometheus
-  ansible.builtin.apt:
+  apt:
     name: prometheus
     state: present
 
@@ -17,10 +17,10 @@
   notify: Restart Prometheus
 
 - name: Ensure Prometheus started and enabled
-  ansible.builtin.service:
+  service:
     name: prometheus
     state: started
     enabled: yes
 
 - name: flush
-  ansible.builtin.meta: flush_handlers
+  meta: flush_handlers

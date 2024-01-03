@@ -1,6 +1,6 @@
 ---
 - name: Create AGAMA user
-  ansible.builtin.user:
+  user:
     name: agama
     state: present
 

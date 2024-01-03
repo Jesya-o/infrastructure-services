@@ -28,7 +28,7 @@
   notify: Restart keepalived
 
 - name: Create directory prometheus-keepalived-exporter
-  ansible.builtin.file:
+  file:
     path: /usr/local/bin/prometheus-keepalived-exporter
     state: directory
     mode: 0755

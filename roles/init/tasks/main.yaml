@@ -2,12 +2,12 @@
 
 # Cache update
 - name: Update APT cache
-  ansible.builtin.apt:
+  apt:
     cache_valid_time: 86400
 
 # Enable Prometheus node exporters
 - name: Install Prometheus node exporter
-  ansible.builtin.apt:
+  apt:
     name: prometheus-node-exporter
     state: present
   notify:
@@ -21,7 +21,7 @@
 
 # Certificates Update
 - name: Ensure ca-certificates version is 20230311ubuntu0.20.04.1 or newer
-  ansible.builtin.apt:
+  apt:
     name: ca-certificates=20230311ubuntu0.20.04.1
     state: present
 
@@ -48,21 +48,21 @@
 
 # Backup
 - name: Create backup user
-  ansible.builtin.user:
+  user:
     name: '{{ backup_user }}'
     home: /home/backup
     shell: /bin/bash
     generate_ssh_key: true
 
 - name: Create file with known hosts
-  ansible.builtin.template:
+  template:
     src: known_hosts
     dest: /home/backup/.ssh/known_hosts
     owner: '{{ backup_user }}'
     group: '{{ backup_user }}'
 
 - name: Create restore directory, created and owned by backup
-  ansible.builtin.file:
+  file:
     path: /home/backup/restore
     state: directory
     owner: '{{ backup_user }}'

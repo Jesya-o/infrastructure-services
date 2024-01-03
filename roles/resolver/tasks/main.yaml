@@ -1,16 +1,16 @@
 ---
 - name: Stop systemd-resolved service
-  ansible.builtin.service:
+  service:
     name: systemd-resolved
     state: stopped
 
 - name: Disable systemd-resolved service on boot
-  ansible.builtin.service:
+  service:
     name: systemd-resolved
     enabled: no
 
 - name: Generate and copy resolv.conf file
-  ansible.builtin.template:
+  template:
     src: "resolv.conf.j2"
     dest: "/etc/resolv.conf"
     owner: root
