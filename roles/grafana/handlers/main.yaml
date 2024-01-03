@@ -3,3 +3,14 @@
   community.docker.docker_container:
     name: grafana
     restart: yes
+
+- name: Check if Grafana container exists
+  community.docker.docker_container_info:
+    name: grafana
+  register: grafana_container_info
+
+- name: Remove existing Grafana container
+  community.docker.docker_container:
+    name: grafana
+    state: absent
+  when: grafana_container_info.exists

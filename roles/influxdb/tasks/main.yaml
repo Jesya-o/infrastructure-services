@@ -20,16 +20,16 @@
     - Restart InfluxDB
 
 - name: flush
-  ansible.builtin.meta: flush_handlers
+  meta: flush_handlers
 
 - name: Ensure InfluxDB is started and enabled
-  ansible.builtin.service:
+  service:
     name: influxdb
     state: started
     enabled: yes
 
 - name: Ensure influxd is started and enabled
-  ansible.builtin.service:
+  service:
     name: influxd
     state: started
     enabled: yes
@@ -57,7 +57,7 @@
 
 # InfluxDB backup
 - name: Create influxdb directory, created and owned by backup
-  ansible.builtin.file:
+  file:
     path: /home/backup/influxdb
     state: directory
     owner: '{{ backup_user }}'
@@ -65,6 +65,6 @@
     mode: '0744'
 
 - name: Add an influxdb cron tab
-  ansible.builtin.template:
+  template:
     src: influxdb-backup
     dest: /etc/cron.d/influxdb-backup

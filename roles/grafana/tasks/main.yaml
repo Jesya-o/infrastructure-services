@@ -13,6 +13,12 @@
     src: grafana.ini.j2
     dest: /opt/grafana/grafana.ini
   no_log: true
+  notify: 
+    - Check if Grafana container exists
+    - Remove existing Grafana container
+
+- name: flush
+  ansible.builtin.meta: flush_handlers
 
 - name: Copy dashboards
   copy:
@@ -28,12 +34,6 @@
   template:
     src: datasources.yaml.j2
     dest: /opt/grafana/provisioning/datasources/datasources.yaml
-  notify: Restart Grafana
-
-- name: Add datasources
-  template:
-    src: dashboards.yaml.j2
-    dest: /opt/grafana/provisioning/dashboards/dashboards.yaml
   notify: Restart Grafana
 
 - name: Copy provisioning configuration file to the remote host
