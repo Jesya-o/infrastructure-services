@@ -15,3 +15,9 @@
     dest: /etc/telegraf/telegraf.conf
   notify:
     - Restart Telegraf
+
+- name: Ensure Telegraf started and enabled
+  service:
+    name: telegraf
+    state: started
+    enabled: true

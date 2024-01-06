@@ -1,6 +1,6 @@
-Jesya-o-1 ansible_host=193.40.156.67 ansible_port=29322 ansible_user=ubuntu
-Jesya-o-2 ansible_host=193.40.156.67 ansible_port=44722 ansible_user=ubuntu
-Jesya-o-3 ansible_host=193.40.156.67 ansible_port=45622 ansible_user=ubuntu
+Jesya-o-1 ansible_host=193.40.156.67 ansible_port=16922 ansible_user=ubuntu
+Jesya-o-2 ansible_host=193.40.156.67 ansible_port=7822 ansible_user=ubuntu
+Jesya-o-3 ansible_host=193.40.156.67 ansible_port=5022 ansible_user=ubuntu
 
 [dns_primaries]
 Jesya-o-3

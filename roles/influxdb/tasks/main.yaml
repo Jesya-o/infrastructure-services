@@ -28,12 +28,6 @@
     state: started
     enabled: yes
 
-- name: Ensure influxd is started and enabled
-  service:
-    name: influxd
-    state: started
-    enabled: yes
-
 # Enabling InfluxDB stats exporter
 - name: Download InfluxDB Stats Exporter binary
   get_url:

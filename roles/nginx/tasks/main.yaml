@@ -10,11 +10,6 @@
     state: started
     enabled: yes
 
-- name: Restart Nginx Service
-  systemd:
-    name: nginx
-    state: started
-
 - name: Copy Nginx configuration file
   template:
     src: default.j2
