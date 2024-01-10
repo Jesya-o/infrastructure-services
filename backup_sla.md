@@ -27,7 +27,7 @@ This document provides an overview of the backup approach for the following comp
 
 ## Recovery Point Objective (RPO)
 
-The RPO for the database servers is set at 1 hour. This means that, in the event of a failure, we aim to recover data up to the last one hour before the failure occurred.
+The RPO for the database servers is 1 day. This means that, in the event of a failure, we aim to recover data up to the last one day before the failure occurred.
 
 ### Database Servers
 - For MySQL databases, full backups are made weekly, on Monday at 16:10 UTC.

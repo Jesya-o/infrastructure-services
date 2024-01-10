@@ -1,5 +1,6 @@
 global_defs {
     enable_script_security
+    log_detail
 }
 
 vrrp_script check_haproxy {
@@ -12,6 +13,7 @@ vrrp_instance agama {
     interface ens3
     virtual_router_id 1
     priority {{ 101 - ansible_hostname[-1] | int }}
+    preempt
     advert_int 1
 
     virtual_ipaddress {
