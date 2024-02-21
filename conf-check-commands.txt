@@ -1,0 +1,14 @@
+named-checkzone 168.192.in-addr.arpa /var/cache/bind/db.rev
+named-checkconf
+haproxy -c -f /etc/haproxy/haproxy.cfg
+rsyslogd -N1
+nginx -t
+dig [name].epy.io @192.168.42.[pr]
+telegraf --test --config /etc/telegraf/telegraf.conf
+
+
+mysql password check: 
+mysql -u backup -p -h localhost
+
+systemd-analyze verify /etc/systemd/system/pinger.service
+promtool check config /etc/prometheus/prometheus.yml
